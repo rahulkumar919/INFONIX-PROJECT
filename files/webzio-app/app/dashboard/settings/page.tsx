@@ -1,84 +1,238 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '../../../stores/authStore'
 import toast from 'react-hot-toast'
 
-export default function SettingsPage() {
+const C = {
+  purple: '#7C3AED', cyan: '#22D3EE', card: '#0F172A', text: '#E2E8F0',
+  textMuted: '#94A3B8', border: 'rgba(124, 58, 237, 0.15)'
+}
+
+export default function ProfileSettingsPage() {
   const { user, token } = useAuthStore()
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+  const [profileForm, setProfileForm] = useState({
+    name: '',
+    email: ''
+  })
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
     newPassword: '',
+    confirmPassword: ''
   })
 
-  const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        name: user.name || '',
+        email: user.email || ''
+      })
+    }
+  }, [user])
 
-  async function updateProfile(e: React.FormEvent) {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!profileForm.name || !profileForm.email) {
+      toast.error('Name and email are required')
+      return
+    }
+
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/profile', {
-        method: 'PUT', headers,
-        body: JSON.stringify(form),
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(profileForm)
       })
       const data = await res.json()
-      if (data.success) toast.success('Profile updated! ✨')
-      else toast.error(data.message)
-    } catch {
-      toast.error('Failed to sync profile')
-    } finally {
-      setLoading(false)
+      if (data.success) {
+        toast.success('Profile updated successfully')
+      } else {
+        toast.error(data.error || 'Failed to update profile')
+      }
+    } catch (error) {
+      toast.error('Failed to update profile')
     }
+    setLoading(false)
+  }
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+      toast.error('All password fields are required')
+      return
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('New passwords do not match')
+      return
+    }
+    if (passwordForm.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await fetch('/api/user/password', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      })
+      const data = await res.json()
+      if (data.success) {
+        toast.success('Password changed successfully')
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      } else {
+        toast.error(data.error || 'Failed to change password')
+      }
+    } catch (error) {
+      toast.error('Failed to change password')
+    }
+    setLoading(false)
   }
 
   return (
-    <div style={{ maxWidth: 640 }}>
-      <div style={{ marginBottom: 40 }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1e293b', marginBottom: 6 }}>Account Settings</h1>
-        <p style={{ color: '#64748b', fontSize: '0.92rem' }}>Configure your profile preferences and security.</p>
+    <div style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: '1.8rem', fontWeight: 900, color: C.text, marginBottom: 8 }}>⚙️ Profile Settings</h1>
+        <p style={{ color: C.textMuted, fontSize: '0.9rem' }}>Manage your account settings</p>
       </div>
 
-      <div style={{ background: '#fff', border: '1px solid #f0f0f2', borderRadius: 24, padding: 40, boxShadow: '0 4px 25px rgba(0,0,0,0.02)' }}>
-        <form onSubmit={updateProfile}>
-          <div style={{ marginBottom: 32 }}>
-            <label style={{ display: 'block', fontSize: '.85rem', fontWeight: 700, color: '#334155', marginBottom: 10 }}>Account Name</label>
-            <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              style={{ width: '100%', padding: '14px 18px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '.92rem', outline: 'none', background: '#fcfcfd' }} />
-          </div>
+      {/* Profile Information */}
+      <div style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: C.text, marginBottom: 20 }}>👤 Profile Information</h2>
+        <form onSubmit={handleProfileUpdate}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 32 }}>
+            {/* Name */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                Full Name *
+              </label>
+              <input
+                type="text"
+                value={profileForm.name}
+                onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                placeholder="John Doe"
+                style={{
+                  width: '100%', padding: '12px 16px', background: '#1E293B', border: `1px solid ${C.border}`,
+                  borderRadius: 8, color: C.text, fontSize: '0.95rem'
+                }}
+                required
+              />
+            </div>
 
-          <div style={{ marginBottom: 32 }}>
-            <label style={{ display: 'block', fontSize: '.85rem', fontWeight: 700, color: '#334155', marginBottom: 10 }}>Email Protocol (Authentication)</label>
-            <input type="email" value={form.email} disabled
-              style={{ width: '100%', padding: '14px 18px', border: '1.5px solid #f1f5f9', borderRadius: 12, fontSize: '.92rem', outline: 'none', color: '#94a3b8', background: '#f8fafc' }} />
-            <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 8 }}>Internal security hash prevents email re-mapping for this account.</p>
-          </div>
+            {/* Email */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                Email Address *
+              </label>
+              <input
+                type="email"
+                value={profileForm.email}
+                onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                placeholder="john@example.com"
+                style={{
+                  width: '100%', padding: '12px 16px', background: '#1E293B', border: `1px solid ${C.border}`,
+                  borderRadius: 8, color: C.text, fontSize: '0.95rem'
+                }}
+                required
+              />
+            </div>
 
-          <div style={{ marginBottom: 40 }}>
-            <label style={{ display: 'block', fontSize: '.85rem', fontWeight: 700, color: '#334155', marginBottom: 10 }}>New Access Key (Optional)</label>
-            <input type="password" value={form.newPassword} onChange={e => setForm({ ...form, newPassword: e.target.value })}
-              placeholder="Leave blank to maintain current signature"
-              style={{ width: '100%', padding: '14px 18px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '.92rem', outline: 'none', background: '#fcfcfd' }} />
-          </div>
-
-          <div style={{ display: 'flex', gap: 16 }}>
-             <button type="submit" disabled={loading} style={{ 
-               padding: '14px 32px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', 
-               border: 'none', borderRadius: 12, fontSize: '0.9rem', fontWeight: 800, cursor: 'pointer', 
-               boxShadow: '0 4px 12px rgba(99,102,241,0.2)', transition: 'all 0.2s'
-             }}>
-               {loading ? 'Initializing Sync...' : '💾 Sync Infrastructure'}
-             </button>
+            {/* Submit */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  padding: '12px 24px', background: `linear-gradient(135deg, ${C.purple}, ${C.cyan})`,
+                  border: 'none', borderRadius: 8, color: '#fff', fontWeight: 700, cursor: 'pointer',
+                  opacity: loading ? 0.6 : 1
+                }}
+              >
+                {loading ? 'Saving...' : '💾 Save Changes'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
 
-      <div style={{ marginTop: 40, padding: 32, background: '#fff1f2', borderRadius: 24, border: '1px solid #fecdd3' }}>
-        <h3 style={{ fontSize: '1rem', fontWeight: 900, color: '#9f1239', marginBottom: 10 }}>🚨 Dangerous Access Area</h3>
-        <p style={{ fontSize: '0.88rem', color: '#be123c', marginBottom: 24, lineHeight: 1.6 }}>Deleting your global account will terminate all stores and associated product databases permanently. This action cannot be undone.</p>
-        <button style={{ padding: '12px 24px', background: '#fb7185', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.82rem', fontWeight: 800, cursor: 'pointer' }}>
-          Deactivate Hub
-        </button>
+      {/* Change Password */}
+      <div>
+        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: C.text, marginBottom: 20 }}>🔒 Change Password</h2>
+        <form onSubmit={handlePasswordChange}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 32 }}>
+            {/* Current Password */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                Current Password *
+              </label>
+              <input
+                type="password"
+                value={passwordForm.currentPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                placeholder="Enter current password"
+                style={{
+                  width: '100%', padding: '12px 16px', background: '#1E293B', border: `1px solid ${C.border}`,
+                  borderRadius: 8, color: C.text, fontSize: '0.95rem'
+                }}
+              />
+            </div>
+
+            {/* New Password */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                New Password *
+              </label>
+              <input
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                placeholder="Enter new password (min 6 characters)"
+                style={{
+                  width: '100%', padding: '12px 16px', background: '#1E293B', border: `1px solid ${C.border}`,
+                  borderRadius: 8, color: C.text, fontSize: '0.95rem'
+                }}
+              />
+            </div>
+
+            {/* Confirm Password */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                Confirm New Password *
+              </label>
+              <input
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                placeholder="Confirm new password"
+                style={{
+                  width: '100%', padding: '12px 16px', background: '#1E293B', border: `1px solid ${C.border}`,
+                  borderRadius: 8, color: C.text, fontSize: '0.95rem'
+                }}
+              />
+            </div>
+
+            {/* Submit */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  padding: '12px 24px', background: `linear-gradient(135deg, ${C.purple}, ${C.cyan})`,
+                  border: 'none', borderRadius: 8, color: '#fff', fontWeight: 700, cursor: 'pointer',
+                  opacity: loading ? 0.6 : 1
+                }}
+              >
+                {loading ? 'Changing...' : '🔐 Change Password'}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   )

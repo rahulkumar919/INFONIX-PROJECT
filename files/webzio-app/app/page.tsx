@@ -271,7 +271,7 @@ export default function HomePage() {
 
   const scrollTemplates = [...ALL_TEMPLATES, ...ALL_TEMPLATES]
 
-  const navLinks = [['Features', '#features'], ['Templates', '#templates'], ['How it Works', '#how'], ['Pricing', '#pricing']]
+  const navLinks: [string, string][] = [['Features', '#features'], ['Templates', '#templates'], ['How it Works', '#how'], ['Pricing', '#pricing']]
 
   return (
     <div style={{ fontFamily: "'Inter',system-ui,sans-serif", background: '#fff', color: '#111', overflowX: 'hidden' }}>

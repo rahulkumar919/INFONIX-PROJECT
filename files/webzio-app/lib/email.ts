@@ -1,10 +1,10 @@
-import nodemailer from 'nodemailer'
+import * as nodemailer from 'nodemailer'
 
 // Email service for sending OTP
 export async function sendOTPEmail(email: string, otp: string, name: string) {
   try {
     // Create transporter with Gmail
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,

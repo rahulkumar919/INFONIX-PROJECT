@@ -16,7 +16,6 @@ export default function StorePage() {
         const data = await res.json()
         if (data.success) {
           setStore(data.store)
-          // Track view
           await fetch(`/api/store/${slug}/view`, { method: 'POST' })
         }
       } catch (error) {
@@ -43,17 +42,10 @@ export default function StorePage() {
             border: '4px solid rgba(255,255,255,0.3)',
             borderTop: '4px solid #fff',
             borderRadius: '50%',
-            margin: '0 auto 20px',
-            animation: 'spin 1s linear infinite'
+            margin: '0 auto 20px'
           }}></div>
           <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Loading store...</p>
         </div>
-        <style jsx>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
       </div>
     )
   }
@@ -81,7 +73,7 @@ export default function StorePage() {
             Store Not Found
           </h1>
           <p style={{ color: '#64748b', marginBottom: '32px', fontSize: '1rem' }}>
-            The store you're looking for doesn't exist or has been removed.
+            The store you are looking for does not exist or has been removed.
           </p>
           <Link href="/" style={{
             display: 'inline-block',
@@ -89,4 +81,22 @@ export default function StorePage() {
             background: 'linear-gradient(135deg, #667eea, #764ba2)',
             color: '#fff',
             borderRadius: '12px',
-         
+            textDecoration: 'none',
+            fontWeight: 700
+          }}>
+            Go Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f8fafc' }}>
+      <h1 style={{ padding: '40px', textAlign: 'center', fontSize: '2rem', fontWeight: 900 }}>
+        {store.name}
+      </h1>
+      <p style={{ textAlign: 'center', color: '#64748b' }}>Store page coming soon...</p>
+    </div>
+  )
+}

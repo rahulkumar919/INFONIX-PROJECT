@@ -39,8 +39,8 @@ export async function POST(req: Request) {
         user.otpExpiry = undefined
         await user.save()
 
-        // Generate JWT token
-        const token = generateToken({ id: user._id, email: user.email })
+        // Generate JWT token with role
+        const token = generateToken({ id: user._id, email: user.email, role: user.role })
 
         const response = NextResponse.json({
             success: true,

@@ -1,56 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '../../../../../lib/db'
-import Website from '../../../../../models/Website'
+import Gallery from '../../../../../models/Gallery'
 import { requireAuth } from '../../../../../lib/middleware'
 
-const MAX_GALLERY_IMAGES = 5
+const MAX_IMAGES = 5
 
-// GET gallery
+// GET - Get all gallery images for a store
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const { error, user } = requireAuth(req)
+  const { error } = requireAuth(req)
   if (error) return error
+
   await dbConnect()
-
-  const store = await Website.findOne({ _id: params.id, userId: user.id }).select('gallery')
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
-
-  return NextResponse.json({ success: true, gallery: store.gallery, max: MAX_GALLERY_IMAGES })
+  const images = await Gallery.find({ websiteId: params.id }).sort({ order: 1, createdAt: -1 })
+  return NextResponse.json({ success: true, images })
 }
 
-// POST add image URL to gallery
+// POST - Add new image to gallery
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const { error, user } = requireAuth(req)
+  const { error } = requireAuth(req)
   if (error) return error
+
   await dbConnect()
 
-  const { imageUrl } = await req.json()
-  if (!imageUrl) return NextResponse.json({ success: false, message: 'Image URL required' }, { status: 400 })
-
-  const store = await Website.findOne({ _id: params.id, userId: user.id })
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
-
-  if (store.gallery.length >= MAX_GALLERY_IMAGES) {
-    return NextResponse.json({ success: false, message: `Maximum ${MAX_GALLERY_IMAGES} images allowed` }, { status: 400 })
+  // Check if max limit reached
+  const count = await Gallery.countDocuments({ websiteId: params.id })
+  if (count >= MAX_IMAGES) {
+    return NextResponse.json({
+      success: false,
+      message: `Maximum ${MAX_IMAGES} images allowed`
+    }, { status: 400 })
   }
 
-  store.gallery.push(imageUrl)
-  await store.save()
+  const { imageUrl, title, description } = await req.json()
 
-  return NextResponse.json({ success: true, gallery: store.gallery })
-}
+  if (!imageUrl) {
+    return NextResponse.json({ success: false, message: 'Image URL is required' }, { status: 400 })
+  }
 
-// DELETE remove image from gallery
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { error, user } = requireAuth(req)
-  if (error) return error
-  await dbConnect()
+  const image = await Gallery.create({
+    websiteId: params.id,
+    imageUrl,
+    title: title || '',
+    description: description || '',
+    order: count
+  })
 
-  const { imageUrl } = await req.json()
-  const store = await Website.findOne({ _id: params.id, userId: user.id })
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
-
-  store.gallery = store.gallery.filter((img: string) => img !== imageUrl)
-  await store.save()
-
-  return NextResponse.json({ success: true, gallery: store.gallery })
+  return NextResponse.json({ success: true, image }, { status: 201 })
 }

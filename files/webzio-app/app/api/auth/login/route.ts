@@ -12,11 +12,14 @@ export async function POST(req: Request) {
     await dbConnect()
     const { email, password } = await req.json()
 
+    console.log('🔐 Login attempt:', { email, passwordLength: password?.length })
+
     if (!email || !password) {
       return NextResponse.json({ success: false, message: 'Please provide all fields' }, { status: 400 })
     }
 
-    const user = await User.findOne({ email })
+    // Always check database first
+    const user = await User.findOne({ email: email.toLowerCase() })
     if (!user) {
       return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 })
     }

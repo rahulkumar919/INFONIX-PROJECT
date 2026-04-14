@@ -8,10 +8,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (error) return error
   await dbConnect()
 
-  const store = await Website.findOne({ _id: params.id, userId: user.id })
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
+  const website = await Website.findOne({ _id: params.id, userId: user.id })
+  if (!website) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
 
-  return NextResponse.json({ success: true, store })
+  return NextResponse.json({ success: true, website })
 }
 
 // Full update of store content, branding, SEO, pages, gallery
@@ -21,14 +21,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   await dbConnect()
 
   const body = await req.json()
-  const store = await Website.findOneAndUpdate(
+  const website = await Website.findOneAndUpdate(
     { _id: params.id, userId: user.id },
     { $set: body },
     { new: true }
   )
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
+  if (!website) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
 
-  return NextResponse.json({ success: true, store })
+  return NextResponse.json({ success: true, website })
 }
 
 // PATCH partial update (branding, seo, settings, etc)
@@ -38,14 +38,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   await dbConnect()
 
   const body = await req.json()
-  const store = await Website.findOneAndUpdate(
+  const website = await Website.findOneAndUpdate(
     { _id: params.id, userId: user.id },
     { $set: body },
     { new: true }
   )
-  if (!store) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
+  if (!website) return NextResponse.json({ success: false, message: 'Store not found' }, { status: 404 })
 
-  return NextResponse.json({ success: true, store })
+  return NextResponse.json({ success: true, website })
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
