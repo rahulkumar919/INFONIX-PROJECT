@@ -88,7 +88,7 @@ export default function TemplatesPage() {
                 ))}
               </div>
               <Link
-                href={`/dashboard/stores?template=${t.id}`}
+                href={`/dashboard/stores?openModal=true&template=${t.id}`}
                 style={{ display: 'block', textAlign: 'center', padding: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: '.8rem', boxShadow: '0 3px 10px rgba(79,70,229,.25)' }}
               >
                 Use This Template →

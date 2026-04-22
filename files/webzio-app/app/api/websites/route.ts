@@ -50,12 +50,24 @@ export async function POST(req: Request) {
       }, { status: 403 })
     }
 
-    const slug = slugify(siteName, { lower: true, strict: true })
+    // Generate unique slug
+    let slug = slugify(siteName, { lower: true, strict: true })
+    let slugExists = await Website.findOne({ slug })
+    let counter = 1
+
+    // If slug exists, append number
+    while (slugExists) {
+      slug = `${slugify(siteName, { lower: true, strict: true })}-${counter}`
+      slugExists = await Website.findOne({ slug })
+      counter++
+    }
+
     const website = await Website.create({
       userId: decoded.id,
       siteName,
       slug,
-      templateId,
+      templateId: templateId || 1,
+      isActive: true,
       content: {
         heroTitle: `Welcome to ${siteName}`,
         heroSubtitle: 'Start shopping our amazing collection now.',
@@ -70,6 +82,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, website })
   } catch (error: any) {
-    return NextResponse.json({ success: false, message: 'Store name or slug already exists' }, { status: 400 })
+    console.error('Store creation error:', error)
+    return NextResponse.json({ success: false, message: error.message || 'Failed to create store' }, { status: 400 })
   }
 }

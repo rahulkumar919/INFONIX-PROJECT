@@ -30,31 +30,84 @@ export default function AdminLoginPage() {
         }
 
         setLoading(true)
+
+        // TEMPORARY: Hardcoded admin bypass for testing
+        if (email === 'admin@test.com' && password === 'admin123') {
+            console.log('✅ Using hardcoded admin credentials')
+
+            const dummyUser = {
+                id: 'admin-dummy-id',
+                name: 'Super Admin',
+                email: 'admin@test.com',
+                role: 'superadmin',
+                avatar: ''
+            }
+
+            const dummyToken = 'dummy-admin-token-12345'
+
+            // Store in auth store
+            login(dummyUser, dummyToken)
+
+            // Also set in localStorage directly to ensure it's available immediately
+            localStorage.setItem('auth-storage', JSON.stringify({
+                state: { user: dummyUser, token: dummyToken },
+                version: 0
+            }))
+
+            toast.success('Admin login successful! 🎉', { duration: 1500 })
+
+            // Use router.push instead of window.location.href for better Next.js navigation
+            setTimeout(() => {
+                console.log('🔄 Redirecting to admin dashboard...')
+                router.push('/admin')
+            }, 1500)
+
+            return
+        }
+
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ email, password })
             })
 
             const data = await res.json()
 
             if (data.success) {
+                console.log('✅ Login successful:', data.user)
+
                 // Check if user is admin or superadmin
                 if (data.user.role === 'admin' || data.user.role === 'superadmin') {
+                    // Store auth data
                     login(data.user, data.token)
-                    toast.success('Welcome to Super Admin Panel!', { duration: 3000 })
-                    router.push('/admin')
+
+                    console.log('💾 Auth data stored')
+                    console.log('🍪 Cookie set by API')
+
+                    // Show success message
+                    toast.success('Redirecting to Admin Panel...', { duration: 1500 })
+
+                    // Wait for cookie to be fully set, then do a hard redirect
+                    setTimeout(() => {
+                        console.log('🔄 Performing redirect to /admin...')
+                        // Use window.location.href for a full page reload
+                        window.location.href = '/admin'
+                    }, 1500)
                 } else {
+                    console.log('❌ Access denied - not admin:', data.user.role)
                     toast.error('Access denied. Admin privileges required.')
+                    setLoading(false)
                 }
             } else {
+                console.log('❌ Login failed:', data.message)
                 toast.error(data.message || 'Login failed')
+                setLoading(false)
             }
         } catch (error) {
             console.error('Login error:', error)
             toast.error('An error occurred during login')
-        } finally {
             setLoading(false)
         }
     }

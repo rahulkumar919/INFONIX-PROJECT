@@ -46,10 +46,10 @@ export default function DashboardPage() {
   }, [])
 
   const statCards = [
-    { label: 'Hospitality Hubs', value: stats.stores, icon: '🏨', color: '#3B82F6', trend: '+12%', bg: 'rgba(59, 130, 246, 0.1)' },
-    { label: 'Menu / Room Inventory', value: stats.products, icon: '🍽️', color: '#22C55E', trend: '+8%', bg: 'rgba(34, 197, 94, 0.1)' },
-    { label: 'Guest Traffic', value: stats.views, icon: '📈', color: '#F59E0B', trend: '+24%', bg: 'rgba(245, 158, 11, 0.1)' },
-    { label: 'Reservation Interest', value: '3.4%', icon: '💎', color: '#EC4899', trend: '+1.2%', bg: 'rgba(236, 72, 153, 0.1)' },
+    { label: 'Total Stores', value: stats.stores, icon: '🏪', color: '#3B82F6', trend: '+12%', bg: 'rgba(59, 130, 246, 0.1)' },
+    { label: 'Products', value: stats.products, icon: '📦', color: '#22C55E', trend: '+8%', bg: 'rgba(34, 197, 94, 0.1)' },
+    { label: 'Total Views', value: stats.views, icon: '👁️', color: '#F59E0B', trend: '+24%', bg: 'rgba(245, 158, 11, 0.1)' },
+    { label: 'Conversion', value: '3.4%', icon: '📈', color: '#EC4899', trend: '+1.2%', bg: 'rgba(236, 72, 153, 0.1)' },
   ]
 
   const templates: Record<number, { name: string; color: string; icon: string }> = {
@@ -58,22 +58,27 @@ export default function DashboardPage() {
   }
 
   return (
-    <div style={{ paddingBottom: 60 }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: 60 }}>
       {/* Dynamic Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 44, marginTop: 60 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 36 }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: colors.text, marginBottom: 8, letterSpacing: '-0.02em' }}>
-            Executive Dashboard
+          <h1 style={{ fontSize: '1.9rem', fontWeight: 900, color: colors.text, marginBottom: 6, letterSpacing: '-0.02em' }}>
+            Dashboard Overview
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: '0.9rem', color: colors.textMuted }}>Precision monitoring for your commerce empire.</span>
-            <div style={{ padding: '4px 10px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, color: colors.primary, textTransform: 'uppercase' }}>V2.4.0</div>
-          </div>
+          <p style={{ fontSize: '0.95rem', color: colors.textMuted }}>Welcome back, {user?.name || 'User'}! Here's what's happening with your stores.</p>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button style={{ padding: '10px 18px', background: colors.card, border: `1.5px solid ${colors.cardBorder}`, borderRadius: 10, fontSize: '0.85rem', fontWeight: 700, color: colors.textMuted, cursor: 'pointer', transition: 'all 0.2s' }}>Export Intelligence</button>
-          <Link href="/dashboard/stores" style={{ padding: '10px 22px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(59, 130, 246, 0.4)', transition: 'all 0.2s' }}>+ Deploy New Hub</Link>
-        </div>
+        <Link href="/dashboard/stores" style={{ padding: '12px 28px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 8 }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 4px 14px rgba(59, 130, 246, 0.3)'
+          }}
+        >
+          <span style={{ fontSize: '1.1rem' }}>+</span> New Store
+        </Link>
       </div>
 
       {/* Stats Cards */}

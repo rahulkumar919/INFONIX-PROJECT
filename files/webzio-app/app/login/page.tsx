@@ -19,6 +19,8 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     try {
+      console.log('🔐 Attempting login with:', form.email)
+
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -26,18 +28,31 @@ export default function LoginPage() {
       })
       const data = await res.json()
 
+      console.log('📥 Login response:', { success: data.success, status: res.status })
+
       if (data.success) {
         toast.success('Welcome back!')
         login(data.user, data.token)
-        router.push('/dashboard')
+
+        // Redirect based on role
+        if (data.user.role === 'superadmin' || data.user.role === 'admin') {
+          router.push('/admin')
+        } else {
+          router.push('/dashboard')
+        }
       } else if (data.needsVerification) {
         // Redirect to OTP verification
         toast.error('Please verify your email first.')
         router.push(`/verify-otp?email=${encodeURIComponent(form.email)}`)
       } else {
-        toast.error(data.message || 'Login failed')
+        // Show error with debug info in development
+        const errorMsg = data.message || 'Login failed'
+        const debugMsg = data.debug ? `\n${data.debug}` : ''
+        toast.error(errorMsg + (process.env.NODE_ENV === 'development' ? debugMsg : ''))
+        console.error('❌ Login failed:', data)
       }
-    } catch {
+    } catch (error) {
+      console.error('❌ Login error:', error)
       toast.error('Something went wrong. Please try again.')
     }
     setLoading(false)
@@ -47,25 +62,59 @@ export default function LoginPage() {
   async function handleGoogleLogin() {
     setGoogleLoading(true)
     try {
-      const result = await signIn('google', { redirect: false })
+      console.log('🔐 Starting Google OAuth...')
+
+      const result = await signIn('google', {
+        redirect: false,
+        callbackUrl: '/dashboard'
+      })
+
+      console.log('📥 Google OAuth result:', result)
+
       if (result?.error) {
-        toast.error('Google login failed. Please try again.')
+        console.error('❌ Google OAuth error:', result.error)
+        toast.error(`Google login failed: ${result.error}`)
         setGoogleLoading(false)
         return
       }
-      // After Google login, fetch session and store in zustand
-      const sessionRes = await fetch('/api/auth/session')
-      const session = await sessionRes.json()
-      if (session?.user) {
-        const customToken = (session.user as any).customToken
-        login({ id: (session.user as any).id, name: session.user.name, email: session.user.email }, customToken)
-        toast.success(`Welcome, ${session.user.name}!`)
-        router.push('/dashboard')
-      } else {
-        router.push('/dashboard')
+
+      if (result?.ok) {
+        // Fetch session to get user data
+        console.log('✅ Google OAuth successful, fetching session...')
+        const sessionRes = await fetch('/api/auth/session')
+        const session = await sessionRes.json()
+
+        console.log('📥 Session data:', session)
+
+        if (session?.user) {
+          const customToken = (session.user as any).customToken
+          const userId = (session.user as any).id
+          const userRole = (session.user as any).role
+
+          // Store in zustand
+          login({
+            id: userId,
+            name: session.user.name,
+            email: session.user.email,
+            role: userRole
+          }, customToken)
+
+          toast.success(`Welcome, ${session.user.name}!`)
+
+          // Redirect based on role
+          if (userRole === 'superadmin' || userRole === 'admin') {
+            router.push('/admin')
+          } else {
+            router.push('/dashboard')
+          }
+        } else {
+          console.warn('⚠️ No session user found, redirecting to dashboard')
+          router.push('/dashboard')
+        }
       }
-    } catch {
-      toast.error('Google login failed.')
+    } catch (error) {
+      console.error('❌ Google login exception:', error)
+      toast.error('Google login failed. Please try again.')
       setGoogleLoading(false)
     }
   }
@@ -103,10 +152,10 @@ export default function LoginPage() {
           ) : (
             <>
               <svg width="20" height="20" viewBox="0 0 18 18">
-                <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
-                <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/>
-                <path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/>
-                <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/>
+                <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" />
+                <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z" />
+                <path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z" />
+                <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z" />
               </svg>
               Continue with Google
             </>
@@ -115,9 +164,9 @@ export default function LoginPage() {
 
         {/* Divider */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-          <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}/>
+          <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
           <span style={{ padding: '0 12px', color: '#9ca3af', fontSize: '.8rem', fontWeight: 500 }}>OR</span>
-          <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}/>
+          <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
         </div>
 
         {/* Email/Password Form */}
@@ -135,7 +184,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label style={{ fontSize: '.82rem', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>Password</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <label style={{ fontSize: '.82rem', fontWeight: 600, color: '#374151' }}>Password</label>
+              <Link href="/forgot-password" style={{ fontSize: '.75rem', color: '#4f46e5', textDecoration: 'none', fontWeight: 600 }}>
+                Forgot Password?
+              </Link>
+            </div>
             <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'} required value={form.password}

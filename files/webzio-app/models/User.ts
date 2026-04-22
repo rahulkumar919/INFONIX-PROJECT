@@ -48,7 +48,15 @@ const UserSchema = new Schema<IUser>({
 
 // Hash password before saving
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password') || !this.password) return next()
+  // Only hash if password is modified and exists
+  if (!this.isModified('password')) return next()
+  if (!this.password) return next()
+
+  // Don't hash if password is already hashed (starts with $2a$ or $2b$)
+  if (this.password.startsWith('$2a$') || this.password.startsWith('$2b$')) {
+    return next()
+  }
+
   this.password = await bcrypt.hash(this.password, 12)
   next()
 })

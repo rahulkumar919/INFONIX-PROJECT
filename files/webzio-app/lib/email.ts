@@ -50,3 +50,32 @@ export async function sendOTPEmail(email: string, otp: string, name: string) {
 export function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
+
+// Generic email sending function
+export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  try {
+    // Create transporter with Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    })
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || 'Webzio <noreply@webzio.com>',
+      to,
+      subject,
+      html
+    }
+
+    await transporter.sendMail(mailOptions)
+
+    console.log('✅ Email sent successfully to:', to)
+    return true
+  } catch (error) {
+    console.error('❌ Error sending email:', error)
+    throw new Error('Failed to send email. Please try again.')
+  }
+}

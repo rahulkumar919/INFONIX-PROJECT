@@ -5,9 +5,10 @@ import { usePathname, useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '../../../../stores/authStore'
 
 const C = {
-  bg: '#0D1117', sidebar: '#111827', border: 'rgba(59,130,246,0.15)',
-  text: '#E2E8F0', textMuted: '#6B7280', blue: '#3B82F6', blueLight: '#60A5FA',
-  active: 'rgba(59,130,246,0.12)', activeBorder: 'rgba(59,130,246,0.35)',
+  bg: '#F8F9FB', sidebar: '#FFFFFF', border: '#E2E8F0',
+  text: '#0F172A', textMuted: '#64748B', blue: '#3B82F6', blueLight: '#60A5FA',
+  active: 'rgba(59,130,246,0.08)', activeBorder: 'rgba(59,130,246,0.2)',
+  hover: '#F1F5F9'
 }
 
 export default function StoreAdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,19 +24,19 @@ export default function StoreAdminLayout({ children }: { children: React.ReactNo
   const sideW = collapsed ? 68 : 248
 
   const NAV = [
-    { label: 'Overview',   icon: '📊', path: base },
-    { label: 'Branding',   icon: '🎨', path: `${base}/branding` },
-    { label: 'Pages (CMS)',icon: '📄', path: `${base}/pages` },
-    { label: 'Gallery',    icon: '🖼️', path: `${base}/gallery` },
-    { label: 'SEO',        icon: '🔍', path: `${base}/seo` },
-    { label: 'Settings',   icon: '⚙️', path: `${base}/settings` },
-    { label: 'Profile',    icon: '👤', path: `${base}/profile` },
+    { label: 'Overview', icon: '📊', path: base },
+    { label: 'Setup Wizard', icon: '🧙', path: `${base}/wizard` },
+    { label: 'Branding', icon: '🎨', path: `${base}/branding` },
+    { label: 'Pages (CMS)', icon: '📄', path: `${base}/pages` },
+    { label: 'Gallery', icon: '🖼️', path: `${base}/gallery` },
+    { label: 'Settings', icon: '⚙️', path: `${base}/settings` },
+    { label: 'Profile', icon: '👤', path: `${base}/profile` },
   ]
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: C.bg, fontFamily: "'Inter', sans-serif" }}>
       {/* Sidebar */}
-      <aside style={{ width: sideW, minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, position: 'fixed', top: 0, bottom: 0, left: 0, display: 'flex', flexDirection: 'column', transition: 'width 0.3s ease', overflow: 'hidden', zIndex: 100 }}>
+      <aside style={{ width: sideW, minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, position: 'fixed', top: 0, bottom: 0, left: 0, display: 'flex', flexDirection: 'column', transition: 'width 0.3s ease', overflow: 'hidden', zIndex: 100, boxShadow: '4px 0 24px rgba(0,0,0,0.04)' }}>
         {/* Logo */}
         <div style={{ padding: collapsed ? '22px 14px' : '24px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, minWidth: 36, background: 'linear-gradient(135deg, #3B82F6, #2563EB)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', boxShadow: '0 0 16px rgba(59,130,246,0.4)' }}>🏪</div>
@@ -58,9 +59,12 @@ export default function StoreAdminLayout({ children }: { children: React.ReactNo
                 textDecoration: 'none', justifyContent: collapsed ? 'center' : 'flex-start',
                 background: isActive ? C.active : 'transparent',
                 border: `1px solid ${isActive ? C.activeBorder : 'transparent'}`,
-                color: isActive ? C.blueLight : C.textMuted,
+                color: isActive ? C.blue : C.textMuted,
                 fontWeight: isActive ? 700 : 500, fontSize: '0.85rem', transition: 'all 0.18s',
-              }}>
+              }}
+                onMouseEnter={e => !isActive && (e.currentTarget.style.background = C.hover)}
+                onMouseLeave={e => !isActive && (e.currentTarget.style.background = 'transparent')}
+              >
                 <span style={{ fontSize: '1.05rem', minWidth: 18, textAlign: 'center' }}>{item.icon}</span>
                 {!collapsed && <span>{item.label}</span>}
                 {!collapsed && isActive && <span style={{ marginLeft: 'auto', width: 5, height: 5, borderRadius: '50%', background: C.blue, boxShadow: '0 0 6px rgba(59,130,246,0.8)' }} />}
