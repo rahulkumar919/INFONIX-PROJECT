@@ -9,7 +9,7 @@ export default function HotelTemplate({ website, products }: any) {
   const btnText = content.buttonText || 'Book Now'
 
   const [activeTab, setActiveTab] = useState('All')
-  const categories = ['All', ...Array.from(new Set(products.map((p: any) => p.category)))]
+  const categories: string[] = ['All', ...Array.from(new Set(products.map((p: any) => p.category))) as string[]]
 
   // Dynamic Service Icons Mapping (Fallback)
   const serviceIcons: Record<string, string> = { 'Free WiFi':'📡', 'Parking':'🚗', 'Room Service':'🛋️', 'AC':'❄️', 'Swimming Pool':'🏊' };
@@ -124,7 +124,7 @@ export default function HotelTemplate({ website, products }: any) {
            </div>
            
            <div style={{ display: 'flex', gap: 8 }}>
-            {categories.map(cat => (
+            {categories.map((cat: string) => (
               <button key={cat} onClick={() => setActiveTab(cat)} style={{ 
                 padding: '12px 24px', 
                 background: activeTab === cat ? '#0f172a' : '#f8fafc', 

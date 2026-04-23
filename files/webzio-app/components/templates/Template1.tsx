@@ -9,7 +9,7 @@ export default function RestaurantTemplate({ website, products }: any) {
   const btnText = content.buttonText || 'Reserve Table'
 
   const [activeTab, setActiveTab] = useState('All')
-  const categories = ['All', ...Array.from(new Set(products.map((p: any) => p.category)))]
+  const categories: string[] = ['All', ...Array.from(new Set(products.map((p: any) => p.category))) as string[]]
 
   return (
     <div style={{ fontFamily: `"${font}", serif`, background: '#fff', color: '#111', scrollBehavior: 'smooth' }}>
@@ -99,7 +99,7 @@ export default function RestaurantTemplate({ website, products }: any) {
           <div style={{ width: 80, height: 4, background: accent, margin: '0 auto 40px' }}></div>
           
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-            {categories.map(cat => (
+            {categories.map((cat: string) => (
               <button key={cat} onClick={() => setActiveTab(cat)} style={{ 
                 padding: '10px 24px', 
                 background: activeTab === cat ? accent : 'transparent', 

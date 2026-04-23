@@ -388,7 +388,7 @@ export default function AdminTemplatesPage() {
     const data = await res.json()
     if (data.success) {
       setTemplates(data.templates)
-      setCategories([...new Set(data.templates.map((t:any) => t.category))] as string[])
+      setCategories(Array.from(new Set(data.templates.map((t:any) => t.category))) as string[])
     }
     setLoading(false)
   }
