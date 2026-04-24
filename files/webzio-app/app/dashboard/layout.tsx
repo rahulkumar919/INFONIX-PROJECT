@@ -33,6 +33,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: 'My Stores', icon: '🏪', path: '/dashboard/stores' },
     { label: 'Products', icon: '📦', path: '/dashboard/products' },
     { label: 'Templates', icon: '🎨', path: '/dashboard/templates' },
+    { label: 'Categories', icon: '📁', path: '/dashboard/categories' },
+    { label: 'Portfolio', icon: '🖼️', path: '/dashboard/portfolio' },
     { label: 'Subscription', icon: '💳', path: '/dashboard/subscription' },
     { label: 'Settings', icon: '⚙️', path: '/dashboard/settings' },
   ]
