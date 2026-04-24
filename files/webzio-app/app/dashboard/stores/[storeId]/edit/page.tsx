@@ -24,6 +24,7 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [activeSection, setActiveSection] = useState('general')
+  const [previewMode, setPreviewMode] = useState<'live' | 'mobile'>('live')
 
   const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
 
@@ -56,22 +57,22 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
   }
 
   const Field = ({ label, field, type = 'text', placeholder = '', rows = 0, isSocial = false }: any) => (
-    <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontSize: '.72rem', fontWeight: 600, color: '#94a3b8', marginBottom: 5 }}>{label}</label>
+    <div style={{ marginBottom: 16 }}>
+      <label style={{ display: 'block', fontSize: '.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: 8 }}>{label}</label>
       {rows > 0 ? (
         <textarea rows={rows} value={isSocial ? content.socialLinks?.[field] : content[field] || ''}
           onChange={e => isSocial
             ? setContent({ ...content, socialLinks: { ...content.socialLinks, [field]: e.target.value } })
             : setContent({ ...content, [field]: e.target.value })}
           placeholder={placeholder}
-          style={{ width: '100%', padding: '7px 9px', border: '1px solid #334155', borderRadius: 5, fontSize: '.8rem', outline: 'none', fontFamily: 'inherit', resize: 'vertical', background: '#0f172a', color: '#e2e8f0' }} />
+          style={{ width: '100%', padding: '10px 14px', border: '1px solid #334155', borderRadius: 8, fontSize: '.85rem', outline: 'none', fontFamily: 'inherit', resize: 'vertical', background: '#0f172a', color: '#e2e8f0' }} />
       ) : (
         <input type={type} value={isSocial ? (content.socialLinks?.[field] || '') : (content[field] || '')}
           onChange={e => isSocial
             ? setContent({ ...content, socialLinks: { ...(content.socialLinks || {}), [field]: e.target.value } })
             : setContent({ ...content, [field]: e.target.value })}
           placeholder={placeholder}
-          style={{ width: '100%', padding: '7px 9px', border: '1px solid #334155', borderRadius: 5, fontSize: '.8rem', outline: 'none', fontFamily: 'inherit', background: '#0f172a', color: '#e2e8f0' }}
+          style={{ width: '100%', padding: '10px 14px', border: '1px solid #334155', borderRadius: 8, fontSize: '.85rem', outline: 'none', fontFamily: 'inherit', background: '#0f172a', color: '#e2e8f0' }}
         />
       )}
     </div>
@@ -85,35 +86,43 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
   if (!website) return null
 
   return (
-    <div style={{ height: '100vh', background: '#0a0f1e', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      {/* Top Bar - Fixed */}
-      <div style={{ background: '#1e293b', borderBottom: '1px solid #334155', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Link href="/dashboard/stores" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '.85rem' }}>←</Link>
+    <div style={{ height: '100vh', background: '#0f172a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input:focus, textarea:focus { border-color: #6366f1 !important; }
+      `}</style>
+
+      {/* Top Bar */}
+      <div style={{ background: '#1e293b', borderBottom: '1px solid #334155', padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Link href="/dashboard/stores" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '.9rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+            ← Back
+          </Link>
+          <div style={{ width: 1, height: 20, background: '#334155' }}></div>
           <div>
-            <div style={{ fontSize: '.85rem', fontWeight: 700, color: '#e2e8f0' }}>{website.siteName}</div>
-            <div style={{ fontSize: '.65rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: 3 }}>
-              <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#10b981' }}></span>LIVE
+            <div style={{ fontSize: '.95rem', fontWeight: 700, color: '#e2e8f0' }}>{website.siteName}</div>
+            <div style={{ fontSize: '.7rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }}></span>LIVE
             </div>
           </div>
         </div>
-        <button onClick={save} disabled={saving} style={{ padding: '7px 16px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: 5, fontSize: '.75rem', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1 }}>
-          {saving ? 'Syncing...' : '🔄 Sync'}
+        <button onClick={save} disabled={saving} style={{ padding: '10px 24px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: 8, fontSize: '.85rem', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1 }}>
+          {saving ? '🔄 Syncing...' : '🔄 Sync'}
         </button>
       </div>
 
-      {/* Main Content - 3 Columns */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', margin: '8px' }}>
-        {/* Left - Sections */}
-        <div style={{ width: 180, background: '#1e293b', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', flexShrink: 0, borderRadius: '8px', marginRight: '8px' }}>
-          <div style={{ padding: '10px 8px', borderBottom: '1px solid #334155' }}>
-            <div style={{ fontSize: '.62rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.03em' }}>CUSTOMIZATION</div>
+      {/* Main Content */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Left Sidebar - Sections */}
+        <div style={{ width: 240, background: '#1a1f2e', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+          <div style={{ padding: '16px', borderBottom: '1px solid #334155' }}>
+            <div style={{ fontSize: '.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.05em' }}>CUSTOMIZATION</div>
           </div>
           <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
             {SECTIONS.map(s => (
               <button key={s.key} onClick={() => setActiveSection(s.key)}
-                style={{ width: '100%', textAlign: 'left', padding: '7px 8px', borderRadius: 4, border: 'none', background: activeSection === s.key ? '#334155' : 'transparent', color: activeSection === s.key ? '#e2e8f0' : '#94a3b8', fontSize: '.75rem', fontWeight: activeSection === s.key ? 600 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7, marginBottom: 1, transition: 'all 0.1s' }}>
-                <span style={{ fontSize: '.8rem' }}>{s.icon}</span>
+                style={{ width: '100%', textAlign: 'left', padding: '12px 14px', borderRadius: 8, border: 'none', background: activeSection === s.key ? '#6366f1' : 'transparent', color: activeSection === s.key ? '#fff' : '#94a3b8', fontSize: '.85rem', fontWeight: activeSection === s.key ? 600 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, transition: 'all 0.15s' }}>
+                <span style={{ fontSize: '1.1rem' }}>{s.icon}</span>
                 {s.label}
               </button>
             ))}
@@ -121,24 +130,27 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
         </div>
 
         {/* Middle - Editor */}
-        <div style={{ width: 320, background: '#1e293b', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', flexShrink: 0, borderRadius: '8px', marginRight: '8px' }}>
-          <div style={{ padding: '10px 12px', borderBottom: '1px solid #334155' }}>
-            <div style={{ fontSize: '.8rem', fontWeight: 700, color: '#e2e8f0' }}>
-              {SECTIONS.find(s => s.key === activeSection)?.icon} {SECTIONS.find(s => s.key === activeSection)?.label}
+        <div style={{ width: 400, background: '#1e293b', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #334155' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: '1.2rem' }}>{SECTIONS.find(s => s.key === activeSection)?.icon}</span>
+              <div style={{ fontSize: '.95rem', fontWeight: 700, color: '#e2e8f0' }}>
+                {SECTIONS.find(s => s.key === activeSection)?.label}
+              </div>
             </div>
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
 
             {activeSection === 'general' && (
               <div>
-                <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', fontSize: '.72rem', fontWeight: 600, color: '#94a3b8', marginBottom: 5 }}>Store Name</label>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: '.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: 8 }}>Store Name</label>
                   <input value={website.siteName} onChange={e => setWebsite({ ...website, siteName: e.target.value })}
-                    style={{ width: '100%', padding: '7px 9px', border: '1px solid #334155', borderRadius: 5, fontSize: '.8rem', outline: 'none', background: '#0f172a', color: '#e2e8f0' }} />
+                    style={{ width: '100%', padding: '10px 14px', border: '1px solid #334155', borderRadius: 8, fontSize: '.85rem', outline: 'none', background: '#0f172a', color: '#e2e8f0' }} />
                 </div>
-                <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', fontSize: '.72rem', fontWeight: 600, color: '#94a3b8', marginBottom: 5 }}>Domain</label>
-                  <div style={{ padding: '7px 9px', border: '1px solid #334155', borderRadius: 5, fontSize: '.75rem', color: '#64748b', background: '#0f172a' }}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: '.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: 8 }}>Domain</label>
+                  <div style={{ padding: '10px 14px', border: '1px solid #334155', borderRadius: 8, fontSize: '.8rem', color: '#64748b', background: '#0f172a' }}>
                     yourapp.com/store/<span style={{ color: '#6366f1' }}>{website.slug}</span>
                   </div>
                 </div>
@@ -206,143 +218,68 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
         </div>
 
         {/* Right - Preview */}
-        <div style={{ flex: 1, background: '#0a0f1e', overflowY: 'auto', borderRadius: '8px' }}>
-          <div style={{ padding: '8px' }}>
-            {/* Preview Header */}
-            <div style={{ background: '#1e293b', borderRadius: 6, padding: 10, marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 5, background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.9rem' }}>👁</div>
-                <div>
-                  <div style={{ fontSize: '.78rem', fontWeight: 700, color: '#e2e8f0' }}>Live Preview</div>
-                  <div style={{ fontSize: '.65rem', color: '#64748b' }}>Real-time</div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 5 }}>
-                <Link href={`/store/${website.slug}`} target="_blank" style={{ padding: '5px 10px', background: '#334155', border: 'none', borderRadius: 4, color: '#e2e8f0', fontSize: '.7rem', fontWeight: 600, textDecoration: 'none' }}>
-                  🌐 Live
-                </Link>
-                <button style={{ padding: '5px 10px', background: '#334155', border: 'none', borderRadius: 4, color: '#e2e8f0', fontSize: '.7rem', fontWeight: 600, cursor: 'pointer' }}>
-                  📱 Mobile
-                </button>
-              </div>
+        <div style={{ flex: 1, background: '#0f172a', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          {/* Preview Header */}
+          <div style={{ background: '#1e293b', padding: '16px 20px', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+            <div>
+              <div style={{ fontSize: '.85rem', fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>Live Preview</div>
+              <div style={{ fontSize: '.7rem', color: '#64748b' }}>Real-time</div>
             </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => setPreviewMode('live')} style={{ padding: '8px 16px', background: previewMode === 'live' ? '#6366f1' : '#334155', border: 'none', borderRadius: 6, color: '#fff', fontSize: '.75rem', fontWeight: 600, cursor: 'pointer' }}>
+                🌐 Live
+              </button>
+              <button onClick={() => setPreviewMode('mobile')} style={{ padding: '8px 16px', background: previewMode === 'mobile' ? '#6366f1' : '#334155', border: 'none', borderRadius: 6, color: '#fff', fontSize: '.75rem', fontWeight: 600, cursor: 'pointer' }}>
+                📱 Mobile
+              </button>
+            </div>
+          </div>
 
-            {/* Browser Frame */}
-            <div style={{ background: '#1e293b', borderRadius: 6, overflow: 'hidden', boxShadow: '0 6px 25px rgba(0,0,0,0.5)' }}>
+          {/* Browser Frame */}
+          <div style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+            <div style={{ width: previewMode === 'mobile' ? '375px' : '100%', maxWidth: '100%', background: '#1e293b', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
               {/* Browser Bar */}
-              <div style={{ background: '#0f172a', padding: '6px 10px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ display: 'flex', gap: 3 }}>
-                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#ef4444' }}></div>
-                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#f59e0b' }}></div>
-                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981' }}></div>
+              <div style={{ background: '#0f172a', padding: '8px 12px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }}></div>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }}></div>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }}></div>
                 </div>
-                <div style={{ flex: 1, background: '#1e293b', borderRadius: 3, padding: '3px 8px', fontSize: '.68rem', color: '#64748b' }}>
-                  yourapp.com/store/{website.slug}
+                <div style={{ flex: 1, background: '#1e293b', borderRadius: 4, padding: '4px 10px', fontSize: '.7rem', color: '#64748b' }}>
+                  🔒 yourapp.com/store/{website.slug}
                 </div>
               </div>
 
               {/* Preview Content */}
-              <div style={{ background: '#fff', minHeight: 500, maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>
-                {/* Announcement */}
-                {content.announcement && (
-                  <div style={{ background: content.primaryColor || '#6366f1', color: '#fff', padding: '8px 14px', textAlign: 'center', fontSize: '.78rem', fontWeight: 600 }}>
-                    📣 {content.announcement}
-                  </div>
-                )}
-
-                {/* Hero */}
-                {content.heroImage ? (
-                  <div style={{ position: 'relative', height: 300, background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${content.heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: 20 }}>
-                    <div>
-                      <h1 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: 10, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-                        {content.heroTitle || 'Your Title'}
-                      </h1>
-                      <p style={{ fontSize: '1rem', opacity: 0.95 }}>
-                        {content.heroSubtitle || 'Your subtitle'}
-                      </p>
-                      {content.buttonText && (
-                        <button style={{ marginTop: 16, padding: '10px 24px', background: content.primaryColor || '#6366f1', color: '#fff', border: 'none', borderRadius: 6, fontSize: '.85rem', fontWeight: 700, cursor: 'pointer' }}>
-                          {content.buttonText}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: 20 }}>
-                    <div>
-                      <h1 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: 10 }}>
-                        {content.heroTitle || 'Your Title'}
-                      </h1>
-                      <p style={{ fontSize: '1rem', opacity: 0.9 }}>
-                        {content.heroSubtitle || 'Add hero image'}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Content */}
-                <div style={{ padding: '20px 16px' }}>
-                  {/* Logo & Name */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '2px solid #f1f5f9' }}>
-                    {content.logo && <img src={content.logo} alt="Logo" style={{ width: 60, height: 60, objectFit: 'contain', borderRadius: 6 }} />}
-                    <div>
-                      <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1e293b', marginBottom: 3 }}>{website.siteName}</h2>
-                      <p style={{ fontSize: '.85rem', color: '#64748b' }}>Welcome</p>
-                    </div>
-                  </div>
-
-                  {/* About */}
-                  {content.aboutText && (
-                    <div style={{ marginBottom: 20 }}>
-                      <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1e293b', marginBottom: 10 }}>
-                        {content.aboutTitle || '📖 About'}
-                      </h3>
-                      <div style={{ display: 'grid', gridTemplateColumns: content.aboutImage ? '1fr 1fr' : '1fr', gap: 20, alignItems: 'center' }}>
-                        <p style={{ fontSize: '.9rem', color: '#475569', lineHeight: 1.6 }}>{content.aboutText}</p>
-                        {content.aboutImage && <img src={content.aboutImage} alt="About" style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10 }} />}
-                      </div>
-                    </div>
+              <div style={{ background: content.primaryColor || '#6366f1', minHeight: 400, maxHeight: 600, overflowY: 'auto' }}>
+                <div style={{ padding: '60px 40px', textAlign: 'center', color: '#fff' }}>
+                  <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: 16 }}>
+                    Welcome to
+                  </h1>
+                  <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: 20 }}>
+                    {website.siteName}
+                  </h2>
+                  <p style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: 32 }}>
+                    Start shopping our amazing collection now.
+                  </p>
+                  {content.buttonText && (
+                    <button style={{ padding: '14px 32px', background: '#fff', color: content.primaryColor || '#6366f1', border: 'none', borderRadius: 8, fontSize: '.95rem', fontWeight: 700, cursor: 'pointer' }}>
+                      {content.buttonText}
+                    </button>
                   )}
+                </div>
 
-                  {/* Contact & Social */}
-                  <div style={{ display: 'grid', gridTemplateColumns: (content.contactPhone || content.contactEmail) && (content.socialLinks?.facebook || content.socialLinks?.instagram) ? '1fr 1fr' : '1fr', gap: 16, marginBottom: 20 }}>
-                    {(content.contactPhone || content.contactEmail || content.contactAddress) && (
-                      <div style={{ background: '#f8fafc', padding: 16, borderRadius: 10, border: '1px solid #e2e8f0' }}>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b', marginBottom: 10 }}>📞 Contact</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                          {content.contactPhone && <div style={{ display: 'flex', gap: 8 }}><span>📱</span><span style={{ fontSize: '.85rem', color: '#475569' }}>{content.contactPhone}</span></div>}
-                          {content.contactEmail && <div style={{ display: 'flex', gap: 8 }}><span>✉️</span><span style={{ fontSize: '.85rem', color: '#475569' }}>{content.contactEmail}</span></div>}
-                          {content.contactAddress && <div style={{ display: 'flex', gap: 8 }}><span>📍</span><span style={{ fontSize: '.85rem', color: '#475569' }}>{content.contactAddress}</span></div>}
-                        </div>
+                <div style={{ background: '#fff', padding: '40px', minHeight: 300 }}>
+                  <div style={{ maxWidth: 800, margin: '0 auto' }}>
+                    <h3 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', marginBottom: 12 }}>{website.siteName}</h3>
+                    <p style={{ fontSize: '.95rem', color: '#64748b' }}>Welcome</p>
+
+                    {content.aboutText && (
+                      <div style={{ marginTop: 40 }}>
+                        <h4 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', marginBottom: 16 }}>Our Story</h4>
+                        <p style={{ fontSize: '.95rem', color: '#475569', lineHeight: 1.7 }}>{content.aboutText}</p>
                       </div>
                     )}
-
-                    {(content.socialLinks?.facebook || content.socialLinks?.instagram || content.socialLinks?.twitter) && (
-                      <div style={{ background: '#f8fafc', padding: 16, borderRadius: 10, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b', marginBottom: 10 }}>Follow Us</h4>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}>
-                          {content.socialLinks?.facebook && <a href={content.socialLinks.facebook} target="_blank" style={{ width: 40, height: 40, borderRadius: '50%', background: '#1877f2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textDecoration: 'none', fontSize: '1.2rem', fontWeight: 700 }}>f</a>}
-                          {content.socialLinks?.instagram && <a href={content.socialLinks.instagram} target="_blank" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(45deg,#f09433,#dc2743)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textDecoration: 'none', fontSize: '1.1rem' }}>📷</a>}
-                          {content.socialLinks?.twitter && <a href={content.socialLinks.twitter} target="_blank" style={{ width: 40, height: 40, borderRadius: '50%', background: '#1da1f2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textDecoration: 'none', fontSize: '1.1rem' }}>🐦</a>}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Service */}
-                  {(content.openingHours || content.amenities) && (
-                    <div style={{ background: '#fff', padding: 16, borderRadius: 10, border: '2px solid #e2e8f0', marginBottom: 20 }}>
-                      <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b', marginBottom: 10 }}>🕰 Service</h4>
-                      {content.openingHours && <div style={{ marginBottom: 8 }}><span style={{ fontSize: '.8rem', fontWeight: 700, color: '#64748b' }}>Hours: </span><span style={{ fontSize: '.8rem', color: '#475569' }}>{content.openingHours}</span></div>}
-                      {content.amenities && <div><span style={{ fontSize: '.8rem', fontWeight: 700, color: '#64748b' }}>Amenities: </span><span style={{ fontSize: '.8rem', color: '#475569' }}>{content.amenities}</span></div>}
-                    </div>
-                  )}
-
-                  {/* Footer */}
-                  <div style={{ paddingTop: 16, borderTop: '2px solid #f1f5f9', textAlign: 'center' }}>
-                    <p style={{ fontSize: '.8rem', color: '#94a3b8', margin: 0 }}>
-                      {content.footerDesc || `© ${new Date().getFullYear()} ${website.siteName}`}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -350,8 +287,6 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
           </div>
         </div>
       </div>
-
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }
