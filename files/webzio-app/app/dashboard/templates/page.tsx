@@ -1,27 +1,83 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ALL_TEMPLATES, TEMPLATE_CATEGORIES } from '../../../lib/templates'
+import { useAuthStore } from '../../../stores/authStore'
+
+interface Template {
+  _id: string
+  name: string
+  category: string
+  icon: string
+  desc: string
+  color: string
+  accentColor: string
+  tags: string[]
+  popular: boolean
+  isActive: boolean
+  previewImage?: string
+}
 
 export default function TemplatesPage() {
+  const { token } = useAuthStore()
+  const [templates, setTemplates] = useState<Template[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('All')
   const [search, setSearch] = useState('')
 
-  const filtered = ALL_TEMPLATES.filter(t => {
+  useEffect(() => {
+    async function loadTemplates() {
+      try {
+        const res = await fetch('/api/admin/templates', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+        if (data.success) {
+          // Filter only active templates for users
+          const activeTemplates = data.templates.filter((t: Template) => t.isActive)
+          setTemplates(activeTemplates)
+          const cats = Array.from(new Set(activeTemplates.map((t: Template) => t.category)))
+          setCategories(cats as string[])
+        }
+      } catch (error) {
+        console.error('Failed to load templates:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadTemplates()
+  }, [token])
+
+  const filtered = templates.filter(t => {
     const matchCat = activeCategory === 'All' || t.category === activeCategory
     const matchSearch = t.name.toLowerCase().includes(search.toLowerCase()) || t.category.toLowerCase().includes(search.toLowerCase())
     return matchCat && matchSearch
   })
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '12px', animation: 'pulse 1.5s infinite' }}>🎨</div>
+          <div style={{ color: '#64748b', fontSize: '.9rem' }}>Loading templates...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
+      <style>{`
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+      `}</style>
+
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', marginBottom: 6, letterSpacing: '-.02em' }}>
           🎨 Templates
         </h1>
         <p style={{ color: '#64748b', fontSize: '.9rem' }}>
-          Choose from {ALL_TEMPLATES.length} professional templates. Pick one and your store goes live instantly.
+          Choose from {templates.length} professional templates. Pick one and your store goes live instantly.
         </p>
       </div>
 
@@ -35,7 +91,7 @@ export default function TemplatesPage() {
           style={{ padding: '10px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '.88rem', outline: 'none', width: 240, background: '#fff' }}
         />
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {['All', ...TEMPLATE_CATEGORIES].map(cat => (
+          {['All', ...categories].map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -61,12 +117,12 @@ export default function TemplatesPage() {
       {/* Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 20 }}>
         {filtered.map(t => (
-          <div key={t.id} style={{ borderRadius: 16, overflow: 'hidden', border: '1.5px solid #f0f0f0', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,.04)', transition: 'transform .25s, box-shadow .25s' }}
+          <div key={t._id} style={{ borderRadius: 16, overflow: 'hidden', border: '1.5px solid #f0f0f0', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,.04)', transition: 'transform .25s, box-shadow .25s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 36px rgba(79,70,229,.12)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(0,0,0,.04)' }}
           >
             {/* Preview */}
-            <div style={{ height: 140, background: t.color, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', padding: 16 }}>
+            <div style={{ height: 140, background: t.color || 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', padding: 16 }}>
               {t.popular && (
                 <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(245,158,11,.9)', color: '#fff', padding: '2px 10px', borderRadius: 50, fontSize: '.6rem', fontWeight: 800 }}>
                   🔥 Popular
@@ -75,7 +131,7 @@ export default function TemplatesPage() {
               <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(255,255,255,.2)', padding: '2px 10px', borderRadius: 50, fontSize: '.6rem', fontWeight: 700 }}>
                 {t.category}
               </div>
-              <div style={{ fontSize: '2.8rem', marginBottom: 8 }}>{t.icon}</div>
+              <div style={{ fontSize: '2.8rem', marginBottom: 8 }}>{t.icon || '🌐'}</div>
               <div style={{ fontWeight: 900, fontSize: '.88rem', textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>{t.name}</div>
             </div>
 
@@ -88,7 +144,7 @@ export default function TemplatesPage() {
                 ))}
               </div>
               <Link
-                href={`/dashboard/stores?openModal=true&template=${t.id}`}
+                href={`/dashboard/stores?openModal=true&template=${t._id}`}
                 style={{ display: 'block', textAlign: 'center', padding: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: '.8rem', boxShadow: '0 3px 10px rgba(79,70,229,.25)' }}
               >
                 Use This Template →
