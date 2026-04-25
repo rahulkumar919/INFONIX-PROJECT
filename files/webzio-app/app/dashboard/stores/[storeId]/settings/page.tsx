@@ -101,7 +101,7 @@ export default function SettingsPage() {
                     <div>
                         <label style={labelStyle}>Store URL (Slug)</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            <span style={{ color: C.textMuted, fontSize: '0.9rem' }}>yoursite.com/store/</span>
+                            <span style={{ color: C.textMuted, fontSize: '0.9rem' }}>localhost/</span>
                             <input
                                 value={form.slug}
                                 onChange={e => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}

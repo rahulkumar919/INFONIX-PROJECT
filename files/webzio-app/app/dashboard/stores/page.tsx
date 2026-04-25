@@ -4,16 +4,17 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useAuthStore } from '../../../stores/authStore'
 import toast from 'react-hot-toast'
-import { ALL_TEMPLATES, TEMPLATE_CATEGORIES } from '../../../lib/templates'
 
 export default function StoresPage() {
   const { token } = useAuthStore()
   const searchParams = useSearchParams()
   const [stores, setStores] = useState<any[]>([])
+  const [templates, setTemplates] = useState<any[]>([])
+  const [categories, setCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [form, setForm] = useState({ siteName: '', templateId: 1 })
+  const [form, setForm] = useState({ siteName: '', templateId: '' })
   const [deleting, setDeleting] = useState<string | null>(null)
   const [templateSearch, setTemplateSearch] = useState('')
   const [templateCategory, setTemplateCategory] = useState('All')
@@ -29,8 +30,21 @@ export default function StoresPage() {
     setLoading(false)
   }
 
+  async function loadTemplates() {
+    try {
+      const res = await fetch('/api/templates', { headers })
+      const data = await res.json()
+      if (data.success) {
+        setTemplates(data.templates)
+        const cats = Array.from(new Set(data.templates.map((t: any) => t.category)))
+        setCategories(cats as string[])
+      }
+    } catch { }
+  }
+
   useEffect(() => {
     loadStores()
+    loadTemplates()
 
     // Check URL params for template pre-selection
     const openModal = searchParams.get('openModal')
@@ -39,10 +53,7 @@ export default function StoresPage() {
     if (openModal === 'true') {
       setShowModal(true)
       if (templateId) {
-        const tid = parseInt(templateId)
-        if (!isNaN(tid)) {
-          setForm(prev => ({ ...prev, templateId: tid }))
-        }
+        setForm(prev => ({ ...prev, templateId }))
       }
     }
   }, [])
@@ -64,7 +75,7 @@ export default function StoresPage() {
       }
       toast.success('Store deployed successfully! 🚀')
       setShowModal(false)
-      setForm({ siteName: '', templateId: 1 })
+      setForm({ siteName: '', templateId: '' })
       loadStores()
     } catch { toast.error('Deployment failed') }
     finally { setCreating(false) }
@@ -82,13 +93,13 @@ export default function StoresPage() {
     finally { setDeleting(null) }
   }
 
-  const filteredTemplates = ALL_TEMPLATES.filter(t => {
+  const filteredTemplates = templates.filter(t => {
     const matchCat = templateCategory === 'All' || t.category === templateCategory
     const matchSearch = t.name.toLowerCase().includes(templateSearch.toLowerCase()) || t.category.toLowerCase().includes(templateSearch.toLowerCase())
     return matchCat && matchSearch
   })
 
-  const selectedTemplate = ALL_TEMPLATES.find(t => t.id === form.templateId)
+  const selectedTemplate = templates.find(t => t._id === form.templateId)
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -151,7 +162,7 @@ export default function StoresPage() {
               }}
             >
               <div style={{ height: 100, background: 'linear-gradient(135deg, #3B82F6, #2563EB)', padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative' }}>
-                <div style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '4px 10px', borderRadius: 6, backdropFilter: 'blur(4px)' }}>T-{store.templateId}</div>
+                <div style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '4px 10px', borderRadius: 6, backdropFilter: 'blur(4px)' }}>STORE</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,0.2)', color: '#fff', padding: '4px 10px', borderRadius: 50, fontSize: '0.7rem', fontWeight: 800, backdropFilter: 'blur(4px)' }}>
                   <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', animation: 'pulse 2s infinite' }}></div>
                   LIVE
@@ -160,7 +171,7 @@ export default function StoresPage() {
               <div style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: 8, color: '#0f172a' }}>{store.siteName}</h3>
                 <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
-                  <span style={{ fontSize: '0.9rem' }}>🔗</span> store/{store.slug}
+                  <span style={{ fontSize: '0.9rem' }}>🔗</span> {store.slug}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
@@ -185,7 +196,7 @@ export default function StoresPage() {
                       e.currentTarget.style.color = '#475569'
                     }}
                   >⚙️ Edit</Link>
-                  <Link href={`/store/${store.slug}`} target="_blank" style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                  <Link href={`/${store.slug}`} target="_blank" style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
                     onMouseEnter={e => {
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)'
                     }}
@@ -238,7 +249,7 @@ export default function StoresPage() {
 
                 {/* Category Pills */}
                 <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-                  {['All', ...TEMPLATE_CATEGORIES].map(cat => (
+                  {['All', ...categories].map(cat => (
                     <button
                       key={cat}
                       type="button"
@@ -264,15 +275,15 @@ export default function StoresPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, maxHeight: '350px', overflowY: 'auto', padding: '4px', marginBottom: 20 }}>
                   {filteredTemplates.map(t => (
                     <div
-                      key={t.id}
-                      onClick={() => setForm({ ...form, templateId: t.id })}
+                      key={t._id}
+                      onClick={() => setForm({ ...form, templateId: t._id })}
                       style={{
                         padding: '14px 10px',
-                        border: form.templateId === t.id ? '2px solid #6366f1' : '1.5px solid #e2e8f0',
+                        border: form.templateId === t._id ? '2px solid #6366f1' : '1.5px solid #e2e8f0',
                         borderRadius: 14,
                         cursor: 'pointer',
                         textAlign: 'center',
-                        background: form.templateId === t.id ? '#f5f3ff' : '#fff',
+                        background: form.templateId === t._id ? '#f5f3ff' : '#fff',
                         transition: 'all 0.2s',
                         position: 'relative'
                       }}
@@ -282,11 +293,11 @@ export default function StoresPage() {
                           🔥
                         </div>
                       )}
-                      <div style={{ fontSize: '1.8rem', marginBottom: 6 }}>{t.icon}</div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 800, color: form.templateId === t.id ? '#6366f1' : '#1e293b', marginBottom: 3, lineHeight: 1.3 }}>{t.name}</div>
+                      <div style={{ fontSize: '1.8rem', marginBottom: 6 }}>{t.icon || '🌐'}</div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 800, color: form.templateId === t._id ? '#6366f1' : '#1e293b', marginBottom: 3, lineHeight: 1.3 }}>{t.name}</div>
                       <div style={{ fontSize: '0.6rem', color: '#94a3b8', marginBottom: 6 }}>{t.category}</div>
                       <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
-                        {t.tags.slice(0, 2).map(tag => (
+                        {(t.tags || []).slice(0, 2).map((tag: string) => (
                           <span key={tag} style={{ fontSize: '0.52rem', fontWeight: 700, padding: '2px 5px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
                         ))}
                       </div>

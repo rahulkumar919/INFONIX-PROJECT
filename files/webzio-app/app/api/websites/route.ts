@@ -3,6 +3,7 @@ import dbConnect from '../../../lib/db'
 import Website from '../../../models/Website'
 import { verifyToken } from '../../../lib/auth'
 import slugify from 'slugify'
+import { sendStoreCreationEmail } from '../../../lib/email'
 
 export async function GET(req: Request) {
   try {
@@ -80,7 +81,14 @@ export async function POST(req: Request) {
       }
     })
 
-    return NextResponse.json({ success: true, website })
+    // Send email notification (don't wait for it to complete)
+    if (user?.email && user?.name) {
+      sendStoreCreationEmail(user.email, siteName, slug, user.name).catch(err => {
+        console.error('Failed to send store creation email:', err)
+      })
+    }
+
+    return NextResponse.json({ success: true, website, message: 'Store created successfully! Check your email for details.' })
   } catch (error: any) {
     console.error('Store creation error:', error)
     return NextResponse.json({ success: false, message: error.message || 'Failed to create store' }, { status: 400 })

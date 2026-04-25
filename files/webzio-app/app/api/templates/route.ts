@@ -2,24 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '../../../lib/db'
 import Template from '../../../models/Template'
 
-// GET all active templates (public endpoint for users)
+// GET all active templates (public endpoint)
 export async function GET(req: NextRequest) {
-    try {
-        await dbConnect()
+    await dbConnect()
 
-        const { searchParams } = new URL(req.url)
-        const type = searchParams.get('type') || ''
-        const category = searchParams.get('category') || ''
+    const { searchParams } = new URL(req.url)
+    const type = searchParams.get('type') || ''
+    const category = searchParams.get('category') || ''
+    const limit = searchParams.get('limit')
 
-        const query: any = { isActive: true } // Only show active templates
-        if (type) query.templateType = type
-        if (category) query.category = category
+    const query: any = { isActive: true } // Only show active templates
+    if (type) query.templateType = type
+    if (category) query.category = category
 
-        const templates = await Template.find(query).sort({ popular: -1, createdAt: -1 })
+    let templatesQuery = Template.find(query).sort({ createdAt: -1 })
 
-        return NextResponse.json({ success: true, templates })
-    } catch (error: any) {
-        console.error('Error fetching templates:', error)
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 })
+    if (limit) {
+        templatesQuery = templatesQuery.limit(parseInt(limit))
     }
+
+    const templates = await templatesQuery
+    return NextResponse.json({ success: true, templates })
 }

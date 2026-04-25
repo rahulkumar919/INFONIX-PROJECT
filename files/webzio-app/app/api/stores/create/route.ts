@@ -4,6 +4,7 @@ import dbConnect from '../../../../lib/db'
 import User from '../../../../models/User'
 import Website from '../../../../models/Website'
 import { enforcePlanLimit, createLimitResponse } from '../../../../middleware/planEnforcement'
+import { sendStoreCreationEmail } from '../../../../lib/email'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
@@ -53,9 +54,14 @@ export async function POST(req: NextRequest) {
             isEnabled: true
         })
 
+        // Send email notification (don't wait for it to complete)
+        sendStoreCreationEmail(user.email, siteName, slug, user.name).catch(err => {
+            console.error('Failed to send store creation email:', err)
+        })
+
         return NextResponse.json({
             success: true,
-            message: 'Store created successfully',
+            message: 'Store created successfully! Check your email for details.',
             store: newStore,
             remainingStores: user.plan === 'free' ? 1 - currentStoreCount - 1 : 'unlimited'
         })

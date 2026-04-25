@@ -1,62 +1,52 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import jwt from 'jsonwebtoken'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'MySECRETKEY9142517255'
 
 export function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname
+    const { pathname } = request.nextUrl
 
-    // TEMPORARY: Disable middleware completely for testing
-    console.log('🔓 Middleware bypassed for testing - path:', path)
-    return NextResponse.next()
+    // List of reserved paths that should not be treated as store domains
+    const reservedPaths = [
+        '/api',
+        '/dashboard',
+        '/admin',
+        '/login',
+        '/signup',
+        '/forgot-password',
+        '/reset-password',
+        '/verify-otp',
+        '/_next',
+        '/favicon.ico',
+        '/robots.txt',
+        '/sitemap.xml',
+        '/store' // Keep the old store route for backward compatibility
+    ]
 
-    /* Original middleware code - commented out for testing
-    // Check if it's an admin route (but not the login page)
-    if (path.startsWith('/admin') && path !== '/admin/login') {
-        // Get token from cookies
-        const token = request.cookies.get('token')?.value
+    // Check if the path starts with any reserved path
+    const isReservedPath = reservedPaths.some(path => pathname.startsWith(path))
 
-        console.log('🔐 Middleware check for:', path)
-        console.log('🍪 Token present:', !!token)
-
-        // TEMPORARY: Allow dummy token for testing
-        if (token === 'dummy-admin-token-12345') {
-            console.log('✅ Dummy admin token - access granted')
-            return NextResponse.next()
-        }
-
-        // If no token, redirect to admin login
-        if (!token) {
-            console.log('🔒 No token found, redirecting to admin login')
-            return NextResponse.redirect(new URL('/admin/login', request.url))
-        }
-
-        // Verify JWT token and check role
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET) as any
-            console.log('✅ Token verified, user:', decoded.email, 'role:', decoded.role)
-
-            // Check if user has admin or superadmin role
-            if (decoded.role !== 'admin' && decoded.role !== 'superadmin') {
-                console.log('❌ Insufficient permissions, role:', decoded.role)
-                return NextResponse.redirect(new URL('/admin/login', request.url))
-            }
-
-            // Token is valid and user is admin/superadmin - allow access
-            console.log('✅ Access granted to admin panel')
-            return NextResponse.next()
-        } catch (error: any) {
-            console.log('❌ Invalid token:', error.message)
-            // Invalid token, redirect to login
-            return NextResponse.redirect(new URL('/admin/login', request.url))
-        }
+    // If it's a reserved path, continue normally
+    if (isReservedPath) {
+        return NextResponse.next()
     }
 
+    // If it's a root path (/), continue normally
+    if (pathname === '/') {
+        return NextResponse.next()
+    }
+
+    // For all other paths, treat them as potential store domains
+    // The [domain]/page.tsx will handle the actual store lookup
     return NextResponse.next()
-    */
 }
 
 export const config = {
-    matcher: ['/admin/:path*']
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         */
+        '/((?!_next/static|_next/image|favicon.ico).*)',
+    ],
 }

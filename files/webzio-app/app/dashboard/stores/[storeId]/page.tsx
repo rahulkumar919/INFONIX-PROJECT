@@ -69,7 +69,7 @@ export default function StoreOverviewPage() {
           <p style={{ color: C.textMuted, fontSize: '0.85rem' }}>/{store.slug} · Template #{store.templateId}</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <a href={`/store/${store.slug}`} target="_blank" rel="noreferrer" style={{ padding: '10px 18px', background: 'rgba(59,130,246,0.1)', border: `1px solid ${C.border}`, borderRadius: 10, color: C.blueLight, fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+          <a href={`/${store.slug}`} target="_blank" rel="noreferrer" style={{ padding: '10px 18px', background: 'rgba(59,130,246,0.1)', border: `1px solid ${C.border}`, borderRadius: 10, color: C.blueLight, fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
             🔗 View Live Store
           </a>
           <Link href={`${base}/branding`} style={{ padding: '10px 18px', background: 'linear-gradient(135deg,#3B82F6,#2563EB)', border: 'none', borderRadius: 10, color: '#fff', fontSize: '0.82rem', fontWeight: 800, textDecoration: 'none', boxShadow: '0 4px 16px rgba(59,130,246,0.4)' }}>

@@ -1,9 +1,76 @@
 'use client'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ALL_TEMPLATES } from '../lib/templates'
 import MobileNav from '../components/MobileNav'
 import HowItWorks from '../components/HowItWorks'
+
+/* ─────────────────────────────────────────
+   BLOG CARD COMPONENT (used in Latest Blog section)
+───────────────────────────────────────── */
+function BlogCard({ blog, i }: { blog: any; i: number }) {
+  const fallbackColors = ['#4f46e5', '#7c3aed', '#ec4899', '#0ea5e9', '#f97316', '#10b981']
+  const color = fallbackColors[i % fallbackColors.length]
+
+  return (
+    <Link
+      href={`/blog/${blog.slug}`}
+      style={{
+        textDecoration: 'none',
+        display: 'block',
+        background: '#fff',
+        borderRadius: 18,
+        overflow: 'hidden',
+        boxShadow: '0 4px 20px rgba(0,0,0,.06)',
+        border: '1.5px solid #f0f0f0',
+        transition: 'transform .25s, box-shadow .25s',
+        animation: `fadeIn .4s ease ${i * 120}ms both`,
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.transform = 'translateY(-6px)'
+        el.style.boxShadow = '0 16px 48px rgba(79,70,229,.14)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.transform = 'none'
+        el.style.boxShadow = '0 4px 20px rgba(0,0,0,.06)'
+      }}
+    >
+      {/* Image or colour block */}
+      <div style={{ height: 200, position: 'relative', overflow: 'hidden', background: blog.featuredImage ? '#f0f0f0' : `linear-gradient(135deg,${color},${color}cc)` }}>
+        {blog.featuredImage
+          ? <img src={blog.featuredImage} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '3rem', opacity: .4 }}>📝</div>
+        }
+        {/* Overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.5) 0%, transparent 60%)' }} />
+        {/* Date + category */}
+        <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '.66rem', color: 'rgba(255,255,255,.9)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            📅 {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+          <span style={{ background: color, color: '#fff', padding: '3px 10px', borderRadius: 20, fontSize: '.62rem', fontWeight: 800 }}>
+            {blog.category}
+          </span>
+        </div>
+      </div>
+
+      <div style={{ padding: '20px 22px' }}>
+        {/* Title */}
+        <div style={{ width: 28, height: 3, background: `linear-gradient(90deg,${color},${color}60)`, borderRadius: 2, marginBottom: 12 }} />
+        <h3 style={{ fontWeight: 800, fontSize: '1rem', color: '#111', lineHeight: 1.4, marginBottom: 10, letterSpacing: '-.01em', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {blog.title}
+        </h3>
+        <p style={{ fontSize: '.82rem', color: '#6b7280', lineHeight: 1.7, marginBottom: 18, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {blog.excerpt}
+        </p>
+        <span style={{ color, fontWeight: 800, fontSize: '.82rem', display: 'flex', alignItems: 'center', gap: 4 }}>
+          Read More <span style={{ fontSize: '.95rem', transition: 'transform .2s' }}>→</span>
+        </span>
+      </div>
+    </Link>
+  )
+}
 
 /* ─────────────────────────────────────────
    HOOKS
@@ -444,6 +511,10 @@ export default function HomePage() {
   const [showBackTop, setShowBackTop] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [latestBlogs, setLatestBlogs] = useState<any[]>([])
+  const [blogsLoading, setBlogsLoading] = useState(true)
+  const [templates, setTemplates] = useState<any[]>([])
+  const [templatesLoading, setTemplatesLoading] = useState(true)
   const statsRef = useRef<HTMLDivElement>(null)
 
   const tplRow1 = useAutoScroll(0.5, 'left')
@@ -482,6 +553,28 @@ export default function HomePage() {
     return () => clearInterval(id)
   }, [])
 
+  // fetch latest blogs
+  useEffect(() => {
+    fetch('/api/blogs?limit=3')
+      .then(r => r.json())
+      .then(d => { if (d.success) setLatestBlogs(d.blogs) })
+      .catch(() => { })
+      .finally(() => setBlogsLoading(false))
+  }, [])
+
+  // fetch templates
+  useEffect(() => {
+    fetch('/api/templates')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) {
+          setTemplates(d.templates) // All templates are already active from API
+        }
+      })
+      .catch(() => { })
+      .finally(() => setTemplatesLoading(false))
+  }, [])
+
   const stores = useCountUp(1200, 2000, statsVisible)
   const products = useCountUp(18000, 2000, statsVisible)
   const views = useCountUp(500, 2000, statsVisible)
@@ -507,7 +600,7 @@ export default function HomePage() {
 
   const pricingBase = [
     { name: 'Starter', monthlyPrice: 0, yearlyPrice: 0, sub: 'Free forever', popular: false, dark: false, bg: '#fff', border: '#e5e7eb', features: ['1 Store', '10 Menu Items', 'WhatsApp Button', 'Mobile Optimized', 'Basic Template', 'Shareable Link'], cta: 'Start for Free' },
-    { name: 'Pro', monthlyPrice: 299, yearlyPrice: 199, sub: '/month', popular: true, dark: true, bg: 'linear-gradient(145deg,#4f46e5,#7c3aed)', border: 'none', features: ['5 Stores', 'Unlimited Items', 'All 25 Templates', 'Custom Colors & Logo', 'SEO Tools', 'Visitor Analytics', 'Priority Support', 'Remove Branding'], cta: 'Get Pro' },
+    { name: 'Pro', monthlyPrice: 299, yearlyPrice: 199, sub: '/month', popular: true, dark: true, bg: 'linear-gradient(145deg,#4f46e5,#7c3aed)', border: 'none', features: ['5 Stores', 'Unlimited Items', 'All Templates', 'Custom Colors & Logo', 'SEO Tools', 'Visitor Analytics', 'Priority Support', 'Remove Branding'], cta: 'Get Pro' },
     { name: 'Business', monthlyPrice: 799, yearlyPrice: 549, sub: '/month', popular: false, dark: true, bg: '#0f172a', border: 'none', features: ['Unlimited Stores', 'Unlimited Items', 'Custom Domain', 'Advanced Analytics', 'White Label', 'API Access', 'Dedicated Manager', 'Invoice & GST'], cta: 'Get Business' },
   ]
 
@@ -529,9 +622,9 @@ export default function HomePage() {
     { q: 'What types of businesses can use this?', a: 'Restaurants, hotels, cafes, pharmacies, gyms, salons, freelancers, shops — basically any business that wants an online presence without a big budget.' },
   ]
 
-  const scrollTemplates = [...ALL_TEMPLATES, ...ALL_TEMPLATES]
+  const scrollTemplates = [...templates, ...templates]
 
-  const navLinks: [string, string][] = [['Features', '#features'], ['Templates', '#templates'], ['How it Works', '#how'], ['Pricing', '#pricing']]
+  const navLinks: [string, string][] = [['Features', '#features'], ['Templates', '#templates'], ['How it Works', '#how'], ['Pricing', '#pricing'], ['Blog', '/blog']]
 
   return (
     <div style={{ fontFamily: "'Inter',system-ui,sans-serif", background: '#fff', color: '#111', overflowX: 'hidden' }}>
@@ -540,7 +633,47 @@ export default function HomePage() {
           .hero-grid { grid-template-columns: 1fr !important; }
           .stats-grid { grid-template-columns: repeat(2,1fr) !important; }
           .footer-grid { grid-template-columns: 1fr !important; }
+          .tpl-card { width: 200px !important; }
+          .scroll-track { padding: 8px 16px !important; }
+          .setup-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
         }
+        @media (max-width: 480px) {
+          .tpl-card { width: 180px !important; }
+          .scroll-track { padding: 8px 12px !important; }
+          .setup-grid { gap: 20px !important; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes expandWidth { from { width: 0; } to { width: 100%; } }
+        @keyframes particleFloat { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+        @keyframes shineSweep { 0% { left: -100%; } 100% { left: 100%; } }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
+        @keyframes cursorBlink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .animated-bg { background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899, #f97316); }
+        .scroll-wrap { cursor: grab; user-select: none; }
+        .scroll-wrap:active { cursor: grabbing; }
+        .scroll-track { display: flex; animation: none; }
+        .tpl-card { width: 240px; background: #fff; borderRadius: 14px; overflow: hidden; boxShadow: 0 4px 20px rgba(0,0,0,.08); border: 1.5px solid #f0f0f0; flexShrink: 0; position: relative; transition: transform .25s, boxShadow .25s; }
+        .tpl-card:hover { transform: translateY(-6px); boxShadow: 0 16px 48px rgba(79,70,229,.14); }
+        .tpl-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.7); display: flex; alignItems: center; justifyContent: center; opacity: 0; transition: opacity .25s; }
+        .tpl-card:hover .tpl-overlay { opacity: 1; }
+        .card { transition: transform .25s, boxShadow .25s; }
+        .card:hover { transform: translateY(-4px); }
+        .feat-card:hover .feat-icon { transform: scale(1.1); }
+        .feat-icon { transition: transform .25s; }
+        .pro-card { position: relative; overflow: hidden; }
+        .pro-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent); animation: shineSweep 3s ease-in-out infinite; }
+        .testi-card { transition: transform .25s; }
+        .testi-card:hover { transform: translateY(-4px); }
+        .back-top { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; borderRadius: 50%; background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff; border: none; fontSize: 1.2rem; fontWeight: 900; cursor: pointer; boxShadow: 0 4px 16px rgba(79,70,229,.3); zIndex: 1000; transition: all .25s; }
+        .back-top:hover { transform: translateY(-2px); boxShadow: 0 8px 24px rgba(79,70,229,.4); }
+        .tag { display: inline-block; padding: 6px 16px; borderRadius: 50px; fontSize: .72rem; fontWeight: 800; letterSpacing: .06em; textTransform: uppercase; }
+        .divider { width: 60px; height: 3px; background: linear-gradient(90deg,#4f46e5,#ec4899); borderRadius: 2px; margin: 0 auto; }
+        .btn-primary { transition: all .25s; }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-outline { transition: all .25s; }
+        .btn-outline:hover { background: rgba(255,255,255,.12) !important; }
       `}</style>
 
       {/* ── NAV ── */}
@@ -569,45 +702,45 @@ export default function HomePage() {
           {/* LEFT — Content */}
           <div>
             <Reveal>
-              <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'linear-gradient(135deg,#eef2ff,#fdf4ff)', border:'1px solid #c7d2fe', padding:'7px 16px', borderRadius:50, marginBottom:24 }}>
-                <span style={{ width:8, height:8, borderRadius:'50%', background:'linear-gradient(135deg,#4f46e5,#ec4899)', display:'inline-block', animation:'blink 1.5s ease-in-out infinite', flexShrink:0 }}/>
-                <span style={{ fontSize:'.72rem', fontWeight:800, background:'linear-gradient(135deg,#4f46e5,#7c3aed)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', letterSpacing:'.04em' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'linear-gradient(135deg,#eef2ff,#fdf4ff)', border: '1px solid #c7d2fe', padding: '7px 16px', borderRadius: 50, marginBottom: 24 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'linear-gradient(135deg,#4f46e5,#ec4899)', display: 'inline-block', animation: 'blink 1.5s ease-in-out infinite', flexShrink: 0 }} />
+                <span style={{ fontSize: '.72rem', fontWeight: 800, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', letterSpacing: '.04em' }}>
                   🚀 No Code · No Designer · No Hosting Needed
                 </span>
               </div>
             </Reveal>
 
             <Reveal delay={80}>
-              <h1 style={{ fontSize:'clamp(2rem,3.8vw,3.5rem)', fontWeight:900, lineHeight:1.1, marginBottom:20, letterSpacing:'-.04em', fontFamily:'"Playfair Display",serif', minHeight:'clamp(9rem,18vw,14rem)' }}>
-                Turn your business into a<br/>
-                <span style={{ position:'relative', display:'inline-block' }}>
-                  <span style={{ background:'linear-gradient(135deg,#4f46e5,#7c3aed,#ec4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+              <h1 style={{ fontSize: 'clamp(2rem,3.8vw,3.5rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: 20, letterSpacing: '-.04em', fontFamily: '"Playfair Display",serif', minHeight: 'clamp(9rem,18vw,14rem)' }}>
+                Turn your business into a<br />
+                <span style={{ position: 'relative', display: 'inline-block' }}>
+                  <span style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed,#ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                     stunning website
                   </span>
                   {/* Underline animation */}
-                  <span style={{ position:'absolute', bottom:-4, left:0, right:0, height:3, background:'linear-gradient(90deg,#4f46e5,#ec4899)', borderRadius:2, animation:'expandWidth 1s ease .5s both' }}/>
+                  <span style={{ position: 'absolute', bottom: -4, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg,#4f46e5,#ec4899)', borderRadius: 2, animation: 'expandWidth 1s ease .5s both' }} />
                 </span>
-                <br/>
+                <br />
                 <TypeWriter words={['in 5 minutes', 'without any code', 'with WhatsApp orders', 'completely free']} />
               </h1>
             </Reveal>
 
             <Reveal delay={180}>
-              <p style={{ fontSize:'.97rem', color:'#4b5563', lineHeight:1.95, marginBottom:32, maxWidth:460 }}>
-                Webrazeo gives every restaurant, hotel, pharmacy & local shop a <strong style={{ color:'#4f46e5' }}>professional website</strong> with menu, WhatsApp ordering, SEO & analytics — all in one place.
+              <p style={{ fontSize: '.97rem', color: '#4b5563', lineHeight: 1.95, marginBottom: 32, maxWidth: 460 }}>
+                Webrazeo gives every restaurant, hotel, pharmacy & local shop a <strong style={{ color: '#4f46e5' }}>professional website</strong> with menu, WhatsApp ordering, SEO & analytics — all in one place.
               </p>
             </Reveal>
 
             {/* Animated feature pills */}
             <Reveal delay={260}>
-              <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:28 }}>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
                 {[
-                  { icon:'⚡', text:'Live in 5 min', color:'#4f46e5' },
-                  { icon:'💬', text:'WhatsApp Orders', color:'#25D366' },
-                  { icon:'🔍', text:'Google SEO', color:'#ea580c' },
-                  { icon:'📊', text:'Analytics', color:'#7c3aed' },
+                  { icon: '⚡', text: 'Live in 5 min', color: '#4f46e5' },
+                  { icon: '💬', text: 'WhatsApp Orders', color: '#25D366' },
+                  { icon: '🔍', text: 'Google SEO', color: '#ea580c' },
+                  { icon: '📊', text: 'Analytics', color: '#7c3aed' },
                 ].map((f, i) => (
-                  <div key={f.text} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:`${f.color}10`, border:`1px solid ${f.color}30`, borderRadius:50, fontSize:'.78rem', fontWeight:700, color:f.color, animation:`fadeIn .4s ease ${i*80+260}ms both` }}>
+                  <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: `${f.color}10`, border: `1px solid ${f.color}30`, borderRadius: 50, fontSize: '.78rem', fontWeight: 700, color: f.color, animation: `fadeIn .4s ease ${i * 80 + 260}ms both` }}>
                     <span>{f.icon}</span>{f.text}
                   </div>
                 ))}
@@ -615,19 +748,19 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={340}>
-              <div style={{ display:'flex', gap:14, flexWrap:'wrap', marginBottom:28 }}>
+              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 28 }}>
 
                 {/* CTA 1 — Primary Liquid Glass */}
-                <Link href="/signup" style={{ textDecoration:'none', display:'inline-block' }}>
+                <Link href="/signup" style={{ textDecoration: 'none', display: 'inline-block' }}>
                   <div style={{
-                    position:'relative', padding:'14px 32px', borderRadius:16,
-                    background:'linear-gradient(135deg, rgba(79,70,229,0.9), rgba(124,58,237,0.85))',
-                    backdropFilter:'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter:'blur(20px) saturate(180%)',
-                    border:'1px solid rgba(255,255,255,0.35)',
-                    boxShadow:'0 8px 32px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.1)',
-                    cursor:'pointer', overflow:'hidden',
-                    transition:'all .25s ease',
+                    position: 'relative', padding: '14px 32px', borderRadius: 16,
+                    background: 'linear-gradient(135deg, rgba(79,70,229,0.9), rgba(124,58,237,0.85))',
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                    border: '1px solid rgba(255,255,255,0.35)',
+                    boxShadow: '0 8px 32px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.1)',
+                    cursor: 'pointer', overflow: 'hidden',
+                    transition: 'all .25s ease',
                   }}
                     onMouseEnter={e => {
                       const el = e.currentTarget as HTMLDivElement
@@ -641,27 +774,27 @@ export default function HomePage() {
                     }}
                   >
                     {/* Shine sweep */}
-                    <div style={{ position:'absolute', top:0, left:'-100%', width:'60%', height:'100%', background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', transform:'skewX(-20deg)', animation:'shineSweep 3s ease-in-out infinite', pointerEvents:'none' }}/>
+                    <div style={{ position: 'absolute', top: 0, left: '-100%', width: '60%', height: '100%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', transform: 'skewX(-20deg)', animation: 'shineSweep 3s ease-in-out infinite', pointerEvents: 'none' }} />
                     {/* Top highlight */}
-                    <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent)', pointerEvents:'none' }}/>
-                    <span style={{ position:'relative', zIndex:1, fontSize:'.97rem', fontWeight:800, color:'#fff', letterSpacing:'-.01em', display:'flex', alignItems:'center', gap:8 }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent)', pointerEvents: 'none' }} />
+                    <span style={{ position: 'relative', zIndex: 1, fontSize: '.97rem', fontWeight: 800, color: '#fff', letterSpacing: '-.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span>🚀</span> Build My Website Free
-                      <span style={{ fontSize:'1rem' }}>→</span>
+                      <span style={{ fontSize: '1rem' }}>→</span>
                     </span>
                   </div>
                 </Link>
 
                 {/* CTA 2 — Secondary Liquid Glass */}
-                <Link href="/store/demo" style={{ textDecoration:'none', display:'inline-block' }}>
+                <Link href="/store/demo" style={{ textDecoration: 'none', display: 'inline-block' }}>
                   <div style={{
-                    position:'relative', padding:'14px 32px', borderRadius:16,
-                    background:'rgba(255,255,255,0.55)',
-                    backdropFilter:'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter:'blur(20px) saturate(180%)',
-                    border:'1px solid rgba(255,255,255,0.7)',
-                    boxShadow:'0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.04)',
-                    cursor:'pointer', overflow:'hidden',
-                    transition:'all .25s ease',
+                    position: 'relative', padding: '14px 32px', borderRadius: 16,
+                    background: 'rgba(255,255,255,0.55)',
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                    border: '1px solid rgba(255,255,255,0.7)',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.04)',
+                    cursor: 'pointer', overflow: 'hidden',
+                    transition: 'all .25s ease',
                   }}
                     onMouseEnter={e => {
                       const el = e.currentTarget as HTMLDivElement
@@ -677,8 +810,8 @@ export default function HomePage() {
                     }}
                   >
                     {/* Top highlight */}
-                    <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent)', pointerEvents:'none' }}/>
-                    <span style={{ position:'relative', zIndex:1, fontSize:'.97rem', fontWeight:700, color:'#1e1b4b', letterSpacing:'-.01em', display:'flex', alignItems:'center', gap:8 }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent)', pointerEvents: 'none' }} />
+                    <span style={{ position: 'relative', zIndex: 1, fontSize: '.97rem', fontWeight: 700, color: '#1e1b4b', letterSpacing: '-.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span>👁</span> See Live Demo
                     </span>
                   </div>
@@ -688,10 +821,10 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={420}>
-              <div style={{ display:'flex', gap:16, flexWrap:'wrap', marginBottom:28 }}>
+              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
                 {['No credit card', 'Free forever plan', 'Setup in 5 minutes'].map(t => (
-                  <span key={t} style={{ display:'flex', alignItems:'center', gap:5, fontSize:'.8rem', color:'#6b7280', fontWeight:500 }}>
-                    <span style={{ width:16, height:16, borderRadius:'50%', background:'#dcfce7', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'.6rem', color:'#16a34a', fontWeight:900, flexShrink:0 }}>✓</span>
+                  <span key={t} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '.8rem', color: '#6b7280', fontWeight: 500 }}>
+                    <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.6rem', color: '#16a34a', fontWeight: 900, flexShrink: 0 }}>✓</span>
                     {t}
                   </span>
                 ))}
@@ -700,20 +833,20 @@ export default function HomePage() {
 
             {/* Social proof */}
             <Reveal delay={500}>
-              <div style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', background:'rgba(255,255,255,.7)', borderRadius:14, border:'1px solid #e5e7eb', backdropFilter:'blur(8px)', width:'fit-content' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(255,255,255,.7)', borderRadius: 14, border: '1px solid #e5e7eb', backdropFilter: 'blur(8px)', width: 'fit-content' }}>
                 {/* Avatars */}
-                <div style={{ display:'flex' }}>
-                  {['#f97316','#8b5cf6','#10b981','#0ea5e9','#ec4899'].map((c, i) => (
-                    <div key={i} style={{ width:28, height:28, borderRadius:'50%', background:`linear-gradient(135deg,${c},${c}99)`, border:'2px solid #fff', marginLeft: i===0?0:-8, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'.65rem', color:'#fff', fontWeight:800, zIndex:5-i }}>
-                      {['R','P','A','S','V'][i]}
+                <div style={{ display: 'flex' }}>
+                  {['#f97316', '#8b5cf6', '#10b981', '#0ea5e9', '#ec4899'].map((c, i) => (
+                    <div key={i} style={{ width: 28, height: 28, borderRadius: '50%', background: `linear-gradient(135deg,${c},${c}99)`, border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.65rem', color: '#fff', fontWeight: 800, zIndex: 5 - i }}>
+                      {['R', 'P', 'A', 'S', 'V'][i]}
                     </div>
                   ))}
                 </div>
                 <div>
-                  <div style={{ fontSize:'.78rem', fontWeight:700, color:'#111' }}>1,200+ businesses already live</div>
-                  <div style={{ display:'flex', gap:2, marginTop:1 }}>
-                    {[1,2,3,4,5].map(s => <span key={s} style={{ color:'#f59e0b', fontSize:'.65rem' }}>★</span>)}
-                    <span style={{ fontSize:'.65rem', color:'#6b7280', marginLeft:4 }}>4.9/5 rating</span>
+                  <div style={{ fontSize: '.78rem', fontWeight: 700, color: '#111' }}>1,200+ businesses already live</div>
+                  <div style={{ display: 'flex', gap: 2, marginTop: 1 }}>
+                    {[1, 2, 3, 4, 5].map(s => <span key={s} style={{ color: '#f59e0b', fontSize: '.65rem' }}>★</span>)}
+                    <span style={{ fontSize: '.65rem', color: '#6b7280', marginLeft: 4 }}>4.9/5 rating</span>
                   </div>
                 </div>
               </div>
@@ -808,48 +941,77 @@ export default function HomePage() {
       {/* ── TEMPLATES ── */}
       <section id="templates" style={{ padding: '88px 0', background: '#fafafa', overflow: 'hidden' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 44, padding: '0 6%' }}>
-          <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>25 Templates</div>
+          <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>
+            {templatesLoading ? 'Loading...' : `${templates.length} Templates`}
+          </div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em' }}>A template for every business</h2>
           <div className="divider" />
-          <p style={{ color: '#6b7280', marginTop: 16, fontSize: '.93rem', maxWidth: 500, margin: '16px auto 0' }}>From restaurants to pharmacies, gyms to portfolios — pick a template and go live in minutes</p>
+          <p style={{ color: '#6b7280', marginTop: 16, fontSize: '.93rem', maxWidth: 500, margin: '16px auto 0' }}>
+            {templatesLoading
+              ? 'Loading professional templates...'
+              : templates.length > 0
+                ? 'From restaurants to pharmacies, gyms to portfolios — pick a template and go live in minutes'
+                : 'Admin will add templates soon. Check back later!'
+            }
+          </p>
         </Reveal>
 
-        {[tplRow1, tplRow2].map((row, ri) => (
-          <div key={ri} style={{ overflow: 'hidden', marginBottom: ri === 0 ? 16 : 0 }}>
-            <div ref={row.wrapRef} className="scroll-wrap" style={{ overflow: 'hidden' }}>
-              <div ref={row.trackRef} className="scroll-track" style={{ gap: 16, padding: '8px 24px' }}>
-                {scrollTemplates.slice(0, 50).map((t, i) => (
-                  <div key={i} className="tpl-card">
-                    <div style={{ height: 130, background: t.color, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', padding: 16 }}>
-                      {t.popular && <div style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(245,158,11,.9)', color: '#fff', padding: '2px 8px', borderRadius: 50, fontSize: '.58rem', fontWeight: 800, animation: 'blink 2s ease-in-out infinite' }}>🔥 Popular</div>}
-                      <div style={{ position: 'absolute', top: 10, left: 12, background: 'rgba(255,255,255,.2)', padding: '2px 10px', borderRadius: 50, fontSize: '.6rem', fontWeight: 700 }}>{t.category}</div>
-                      <div style={{ fontSize: '2.4rem', marginBottom: 6 }}>{t.icon}</div>
-                      <div style={{ fontWeight: 800, fontSize: '.82rem', textAlign: 'center', fontFamily: '"Playfair Display",serif' }}>{t.name}</div>
-                      {/* hover overlay */}
-                      <div className="tpl-overlay">
-                        <Link href="/signup" style={{ padding: '8px 18px', background: '#fff', color: '#4f46e5', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: '.78rem' }}>Use Template →</Link>
-                      </div>
-                    </div>
-                    <div style={{ padding: '12px 14px' }}>
-                      <div style={{ fontSize: '.73rem', color: '#6b7280', lineHeight: 1.6, marginBottom: 8 }}>{t.desc}</div>
-                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                        {t.tags.map(tag => (
-                          <span key={tag} style={{ fontSize: '.6rem', fontWeight: 700, padding: '2px 8px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {templatesLoading ? (
+          // Loading state
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: 16, animation: 'pulse 1.5s infinite' }}>🎨</div>
+              <div style={{ color: '#6b7280', fontSize: '.9rem' }}>Loading templates...</div>
             </div>
           </div>
-        ))}
+        ) : templates.length === 0 ? (
+          // Empty state
+          <div style={{ textAlign: 'center', padding: '60px 0', color: '#94a3b8' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
+            <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No templates available yet</div>
+            <p style={{ fontSize: '.9rem' }}>Admin is working on adding professional templates. Check back soon!</p>
+          </div>
+        ) : (
+          // Templates grid
+          [tplRow1, tplRow2].map((row, ri) => (
+            <div key={ri} style={{ overflow: 'hidden', marginBottom: ri === 0 ? 16 : 0 }}>
+              <div ref={row.wrapRef} className="scroll-wrap" style={{ overflow: 'hidden' }}>
+                <div ref={row.trackRef} className="scroll-track" style={{ gap: 16, padding: '8px 24px' }}>
+                  {scrollTemplates.slice(0, Math.min(50, templates.length * 2)).map((t, i) => (
+                    <div key={i} className="tpl-card">
+                      <div style={{ height: 130, background: t.color || 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', padding: 16 }}>
+                        {t.popular && <div style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(245,158,11,.9)', color: '#fff', padding: '2px 8px', borderRadius: 50, fontSize: '.58rem', fontWeight: 800, animation: 'blink 2s ease-in-out infinite' }}>🔥 Popular</div>}
+                        <div style={{ position: 'absolute', top: 10, left: 12, background: 'rgba(255,255,255,.2)', padding: '2px 10px', borderRadius: 50, fontSize: '.6rem', fontWeight: 700 }}>{t.category}</div>
+                        <div style={{ fontSize: '2.4rem', marginBottom: 6 }}>{t.icon || '🌐'}</div>
+                        <div style={{ fontWeight: 800, fontSize: '.82rem', textAlign: 'center', fontFamily: '"Playfair Display",serif' }}>{t.name}</div>
+                        {/* hover overlay */}
+                        <div className="tpl-overlay">
+                          <Link href="/signup" style={{ padding: '8px 18px', background: '#fff', color: '#4f46e5', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: '.78rem' }}>Use Template →</Link>
+                        </div>
+                      </div>
+                      <div style={{ padding: '12px 14px' }}>
+                        <div style={{ fontSize: '.73rem', color: '#6b7280', lineHeight: 1.6, marginBottom: 8 }}>{t.desc}</div>
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                          {(t.tags || []).map((tag: string) => (
+                            <span key={tag} style={{ fontSize: '.6rem', fontWeight: 700, padding: '2px 8px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
 
-        <Reveal style={{ textAlign: 'center', marginTop: 36 }}>
-          <Link href="/signup" className="btn-primary" style={{ padding: '13px 32px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontSize: '.95rem', fontWeight: 700, boxShadow: '0 6px 20px rgba(79,70,229,.3)', display: 'inline-block' }}>
-            Browse All 25 Templates →
-          </Link>
-        </Reveal>
+        {templates.length > 0 && (
+          <Reveal style={{ textAlign: 'center', marginTop: 36 }}>
+            <Link href="/signup" className="btn-primary" style={{ padding: '13px 32px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontSize: '.95rem', fontWeight: 700, boxShadow: '0 6px 20px rgba(79,70,229,.3)', display: 'inline-block' }}>
+              Browse All {templates.length} Templates →
+            </Link>
+          </Reveal>
+        )}
       </section>
 
       {/* ── FEATURES ── */}
@@ -870,6 +1032,157 @@ export default function HomePage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* ── HOW TO SETUP WEBSITE ── */}
+      <section style={{ padding: '88px 6%', background: '#fff5f5' }}>
+        <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div className="tag" style={{ background: '#fef2f2', color: '#FF6B7A', marginBottom: 14 }}>How it works</div>
+          <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em' }}>How To Setup Website</h2>
+          <div className="divider" />
+          <p style={{ color: '#6b7280', marginTop: 16, fontSize: '.93rem', maxWidth: 500, margin: '16px auto 0' }}>Get your professional website live in just 4 simple steps</p>
+        </Reveal>
+
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div className="setup-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 32, alignItems: 'start' }}>
+            {[
+              {
+                step: '01',
+                icon: '🛒',
+                title: 'Purchase Template',
+                desc: 'Choose from 25+ professional templates designed for your business type. One-time payment, lifetime access.',
+                color: '#FF6B7A',
+                bgColor: '#fff5f5'
+              },
+              {
+                step: '02',
+                icon: '⚙️',
+                title: 'Add Services',
+                desc: 'Customize your template with your logo, colors, menu items, services, and business information.',
+                color: '#4f46e5',
+                bgColor: '#eef2ff'
+              },
+              {
+                step: '03',
+                icon: '🔧',
+                title: 'Setup Website',
+                desc: 'Configure WhatsApp ordering, SEO settings, analytics, and all the features you need for your business.',
+                color: '#10b981',
+                bgColor: '#ecfdf5'
+              },
+              {
+                step: '04',
+                icon: '🚀',
+                title: 'Launch Website',
+                desc: 'Go live instantly! Share your website link on social media, Google Maps, and start getting customers.',
+                color: '#f59e0b',
+                bgColor: '#fffbeb'
+              }
+            ].map((step, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <div style={{
+                  background: '#fff',
+                  borderRadius: 20,
+                  padding: '32px 28px',
+                  textAlign: 'center',
+                  border: `2px solid ${step.color}20`,
+                  boxShadow: `0 8px 32px ${step.color}15`,
+                  position: 'relative',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}>
+                  {/* Step number */}
+                  <div style={{
+                    position: 'absolute',
+                    top: -16,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    background: step.color,
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '.8rem',
+                    fontWeight: 900,
+                    boxShadow: `0 4px 16px ${step.color}40`
+                  }}>
+                    {step.step}
+                  </div>
+
+                  {/* Icon */}
+                  <div style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    background: step.bgColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '2rem',
+                    margin: '20px auto 20px',
+                    border: `2px solid ${step.color}30`
+                  }}>
+                    {step.icon}
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: 800,
+                      color: '#111',
+                      marginBottom: 12,
+                      fontFamily: '"Playfair Display",serif'
+                    }}>
+                      {step.title}
+                    </h3>
+                    <p style={{
+                      fontSize: '.88rem',
+                      color: '#6b7280',
+                      lineHeight: 1.7,
+                      flex: 1
+                    }}>
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <Reveal style={{ textAlign: 'center', marginTop: 48 }}>
+            <Link href="/signup" style={{
+              display: 'inline-block',
+              padding: '16px 36px',
+              background: 'linear-gradient(135deg, #FF6B7A, #ff8a95)',
+              color: '#fff',
+              borderRadius: 12,
+              textDecoration: 'none',
+              fontSize: '1rem',
+              fontWeight: 700,
+              boxShadow: '0 8px 24px rgba(255,107,122,.3)',
+              transition: 'all .25s ease'
+            }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(-2px)'
+                el.style.boxShadow = '0 12px 32px rgba(255,107,122,.4)'
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(0)'
+                el.style.boxShadow = '0 8px 24px rgba(255,107,122,.3)'
+              }}
+            >
+              🚀 Start Building My Website
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -1059,6 +1372,54 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── LATEST BLOG SECTION ── */}
+      <section id="blog" style={{ padding: '88px 6%', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+        {/* Decorative blobs */}
+        <div style={{ position: 'absolute', top: -80, right: -80, width: 350, height: 350, background: 'radial-gradient(circle,rgba(79,70,229,.07),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, background: 'radial-gradient(circle,rgba(236,72,153,.06),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+
+        <Reveal style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
+          {/* Section Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}>
+            <div>
+              <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Our Blog</div>
+              <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em', color: '#111', marginBottom: 8 }}>Our Latest Blog</h2>
+              <div className="divider" style={{ margin: 0 }} />
+              <p style={{ color: '#6b7280', marginTop: 14, fontSize: '.93rem', maxWidth: 440 }}>Stay updated with tips, insights & stories to grow your business online</p>
+            </div>
+            <Link href="/blog" style={{ padding: '12px 26px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: '.88rem', boxShadow: '0 6px 20px rgba(79,70,229,.3)', whiteSpace: 'nowrap', display: 'inline-block' }}>
+              View More →
+            </Link>
+          </div>
+
+          {/* Blog Cards Grid */}
+          {blogsLoading ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
+              {[0, 1, 2].map(i => (
+                <div key={i} style={{ borderRadius: 18, overflow: 'hidden', border: '1.5px solid #f0f0f0' }}>
+                  <div style={{ height: 200, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+                  <div style={{ padding: 22 }}>
+                    <div style={{ height: 14, background: '#f0f0f0', borderRadius: 8, marginBottom: 12, width: '80%' }} />
+                    <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, marginBottom: 8, width: '100%' }} />
+                    <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, width: '65%' }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : latestBlogs.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
+              {latestBlogs.map((blog, i) => <BlogCard key={blog._id} blog={blog} i={i} />)}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>
+              <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
+              <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No blogs published yet</div>
+              <p style={{ fontSize: '.88rem' }}>Admin is working on great content. Check back soon!</p>
+            </div>
+          )}
+        </Reveal>
+      </section>
+
       {/* ── CTA ── */}
       <section style={{ padding: '88px 6%', background: 'linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 70%,#1e1b4b 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', width: 700, height: 700, background: 'radial-gradient(circle,rgba(129,140,248,.25),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
@@ -1084,34 +1445,163 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding: '48px 6% 28px', background: '#0a0f1e', color: '#fff' }}>
+      <footer style={{ padding: '48px 6% 28px', background: '#1A1A1A', color: '#fff' }}>
         <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr 1fr', gap: 36, maxWidth: 1100, margin: '0 auto', paddingBottom: 36, borderBottom: '1px solid rgba(255,255,255,.07)' }}>
+
+          {/* Brand Column */}
           <div>
-            <div style={{ fontWeight: 900, fontSize: '1.15rem', fontFamily: '"Playfair Display",serif', marginBottom: 12 }}>Webra<span style={{ color: '#818cf8' }}>zeo</span></div>
-            <p style={{ color: '#64748b', fontSize: '.83rem', lineHeight: 1.8, maxWidth: 240 }}>The easiest way for restaurants, hotels and local businesses to get online and grow.</p>
-          </div>
-          {[
-            { title: 'Product', links: ['Features', 'Templates', 'Pricing', 'Dashboard'] },
-            { title: 'Company', links: ['About', 'Blog', 'Careers', 'Contact'] },
-            { title: 'Legal', links: ['Privacy Policy', 'Terms of Use', 'Cookies'] },
-          ].map((col, i) => (
-            <div key={i}>
-              <div style={{ fontWeight: 700, fontSize: '.75rem', color: '#e2e8f0', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 16 }}>{col.title}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {col.links.map(l => (
-                  <a key={l} href="#" style={{ color: '#64748b', textDecoration: 'none', fontSize: '.83rem', transition: 'color .18s' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#818cf8')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>{l}</a>
-                ))}
-              </div>
+            <div style={{ fontWeight: 900, fontSize: '1.15rem', fontFamily: '"Playfair Display",serif', marginBottom: 12 }}>
+              Webra<span style={{ color: '#FF6B7A' }}>zeo</span>
             </div>
-          ))}
+            <p style={{ color: '#9ca3af', fontSize: '.83rem', lineHeight: 1.8, maxWidth: 240, marginBottom: 20 }}>
+              The easiest way for restaurants, hotels and local businesses to get online and grow with professional websites.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              {[
+                { icon: '📘', color: '#1877f2', label: 'Facebook' },
+                { icon: '📸', color: '#e4405f', label: 'Instagram' },
+                { icon: '🐦', color: '#1da1f2', label: 'Twitter' },
+                { icon: '💼', color: '#0077b5', label: 'LinkedIn' }
+              ].map((social, i) => (
+                <a key={i} href="#" style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: `${social.color}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '.9rem',
+                  textDecoration: 'none',
+                  transition: 'all .2s',
+                  border: `1px solid ${social.color}30`
+                }}
+                  onMouseEnter={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.background = social.color
+                    el.style.transform = 'translateY(-2px)'
+                  }}
+                  onMouseLeave={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.background = `${social.color}20`
+                    el.style.transform = 'translateY(0)'
+                  }}
+                  title={social.label}
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Useful Links Column */}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '.75rem', color: '#e2e8f0', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 16 }}>Useful Links</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { label: 'Features', href: '#features' },
+                { label: 'Templates', href: '#templates' },
+                { label: 'Pricing', href: '#pricing' },
+                { label: 'Blog', href: '/blog' },
+                { label: 'Dashboard', href: '/dashboard' },
+                { label: 'Admin Panel', href: '/admin' }
+              ].map(link => (
+                <a key={link.label} href={link.href} style={{
+                  color: '#9ca3af',
+                  textDecoration: 'none',
+                  fontSize: '.83rem',
+                  transition: 'color .18s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#FF6B7A')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+                >
+                  <span style={{ fontSize: '.7rem', opacity: 0.6 }}>→</span>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Us Column */}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '.75rem', color: '#e2e8f0', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 16 }}>Contact Us</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { icon: '📧', label: 'support@webrazeo.com', type: 'email' },
+                { icon: '📞', label: '+91 98765 43210', type: 'phone' },
+                { icon: '📍', label: 'Mumbai, India', type: 'location' },
+                { icon: '💬', label: 'WhatsApp Support', type: 'whatsapp' }
+              ].map((contact, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  color: '#9ca3af',
+                  fontSize: '.83rem'
+                }}>
+                  <span style={{ fontSize: '.9rem', opacity: 0.8 }}>{contact.icon}</span>
+                  <span>{contact.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Newsletter Column */}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '.75rem', color: '#e2e8f0', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 16 }}>Newsletter</div>
+            <p style={{ color: '#9ca3af', fontSize: '.8rem', lineHeight: 1.6, marginBottom: 16 }}>
+              Get tips, updates & exclusive offers for growing your business online.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  border: '1px solid #374151',
+                  background: '#111827',
+                  color: '#fff',
+                  fontSize: '.8rem',
+                  outline: 'none',
+                  transition: 'border-color .2s'
+                }}
+                onFocus={e => (e.currentTarget.style.borderColor = '#FF6B7A')}
+                onBlur={e => (e.currentTarget.style.borderColor = '#374151')}
+              />
+              <button style={{
+                padding: '10px 16px',
+                background: 'linear-gradient(135deg, #FF6B7A, #ff8a95)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                fontSize: '.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all .2s'
+              }}
+                onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-1px)')}
+                onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+              >
+                Subscribe 📧
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Footer Bottom */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 22, maxWidth: 1100, margin: '0 auto', flexWrap: 'wrap', gap: 12 }}>
-          <div style={{ color: '#334155', fontSize: '.78rem' }}>© 2026 Webrazeo. All rights reserved.</div>
-          <div style={{ display: 'flex', gap: 16 }}>
-            <Link href="/login" style={{ color: '#334155', textDecoration: 'none', fontSize: '.78rem', fontWeight: 600 }}>Log In</Link>
-            <Link href="/signup" style={{ color: '#818cf8', textDecoration: 'none', fontSize: '.78rem', fontWeight: 700 }}>Sign Up Free</Link>
+          <div style={{ color: '#6b7280', fontSize: '.78rem' }}>
+            © 2026 Webrazeo. All rights reserved. Made with ❤️ in India
+          </div>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <Link href="/privacy" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '.78rem', fontWeight: 600 }}>Privacy Policy</Link>
+            <Link href="/terms" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '.78rem', fontWeight: 600 }}>Terms of Service</Link>
+            <Link href="/login" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '.78rem', fontWeight: 600 }}>Log In</Link>
+            <Link href="/signup" style={{ color: '#FF6B7A', textDecoration: 'none', fontSize: '.78rem', fontWeight: 700 }}>Sign Up Free</Link>
           </div>
         </div>
       </footer>

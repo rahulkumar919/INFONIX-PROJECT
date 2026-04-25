@@ -250,7 +250,7 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                                     className={`mobile-nav-link${activeSection === href.slice(1) ? ' active' : ''}`}
                                 >
                                     <span style={{ fontSize: '1rem' }}>
-                                        {label === 'Features' ? '⚡' : label === 'Templates' ? '🎨' : label === 'How it Works' ? '🔄' : label === 'Pricing' ? '💎' : '→'}
+                                        {label === 'Features' ? '⚡' : label === 'Templates' ? '🎨' : label === 'How it Works' ? '🔄' : label === 'Pricing' ? '💎' : label === 'Blog' ? '📝' : '→'}
                                     </span>
                                     {label}
                                 </a>

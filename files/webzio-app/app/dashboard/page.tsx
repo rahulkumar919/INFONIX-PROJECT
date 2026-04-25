@@ -138,7 +138,7 @@ export default function DashboardPage() {
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.88rem', fontWeight: 700, color: colors.text }}>{s.siteName}</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                      <span style={{ fontSize: '0.7rem', color: colors.textLight }}>/store/{s.slug}</span>
+                      <span style={{ fontSize: '0.7rem', color: colors.textLight }}>/{s.slug}</span>
                       <span style={{ width: 3, height: 3, borderRadius: '50%', background: colors.textLight }}></span>
                       <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#22C55E' }}>{s.views || 0} IMPRSSNS</span>
                     </div>
