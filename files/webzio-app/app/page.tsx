@@ -1050,7 +1050,7 @@ export default function HomePage() {
               {
                 step: '01',
                 icon: '🛒',
-                title: 'Purchase Template',
+                title: 'Create Templates',
                 desc: 'Choose from 25+ professional templates designed for your business type. One-time payment, lifetime access.',
                 color: '#FF6B7A',
                 bgColor: '#fff5f5'

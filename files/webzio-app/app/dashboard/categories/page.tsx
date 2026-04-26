@@ -37,8 +37,8 @@ export default function CategoriesPage() {
     }, [token])
 
     const filtered = categories.filter(c =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.description?.toLowerCase().includes(search.toLowerCase())
+        c?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        c?.description?.toLowerCase().includes(search.toLowerCase())
     )
 
     if (loading) {

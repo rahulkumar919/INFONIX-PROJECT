@@ -22,10 +22,18 @@ export async function GET(
             )
         }
 
+        // Fetch template data if templateId exists
+        let template = null
+        if (website.templateId) {
+            const Template = (await import('@/models/Template')).default
+            template = await Template.findById(website.templateId).lean()
+        }
+
         console.log('Store found:', website.siteName)
         return NextResponse.json({
             success: true,
-            store: website
+            store: website,
+            template: template
         })
     } catch (error) {
         console.error('Error fetching store:', error)

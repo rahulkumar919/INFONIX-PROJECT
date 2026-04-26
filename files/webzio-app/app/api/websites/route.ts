@@ -28,7 +28,9 @@ export async function POST(req: Request) {
     const decoded = verifyToken(token)
     if (!decoded) return NextResponse.json({ success: false, message: 'Invalid token' }, { status: 401 })
 
-    const { siteName, templateId } = await req.json()
+    const body = await req.json()
+    const { siteName, slug: requestedSlug, templateId, content } = body
+
     if (!siteName) return NextResponse.json({ success: false, message: 'Store name is required' }, { status: 400 })
 
     // Check user plan — free users can only have 1 store
@@ -51,33 +53,44 @@ export async function POST(req: Request) {
       }, { status: 403 })
     }
 
-    // Generate unique slug
-    let slug = slugify(siteName, { lower: true, strict: true })
-    let slugExists = await Website.findOne({ slug })
-    let counter = 1
+    // Generate unique slug from requested slug or site name
+    let slug = requestedSlug ? slugify(requestedSlug, { lower: true, strict: true }) : slugify(siteName, { lower: true, strict: true })
 
-    // If slug exists, append number
-    while (slugExists) {
-      slug = `${slugify(siteName, { lower: true, strict: true })}-${counter}`
-      slugExists = await Website.findOne({ slug })
-      counter++
+    // Check if slug already exists
+    const slugExists = await Website.findOne({ slug })
+    if (slugExists) {
+      return NextResponse.json({
+        success: false,
+        message: 'This domain name is already taken. Please choose a different domain name.',
+        slugTaken: true
+      }, { status: 400 })
+    }
+
+    // Validate templateId - should be a valid ObjectId
+    if (!templateId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Template is required'
+      }, { status: 400 })
     }
 
     const website = await Website.create({
       userId: decoded.id,
       siteName,
       slug,
-      templateId: templateId || 1,
+      templateId: templateId, // ObjectId string from frontend
       isActive: true,
       content: {
-        heroTitle: `Welcome to ${siteName}`,
-        heroSubtitle: 'Start shopping our amazing collection now.',
-        aboutTitle: 'Our Story',
-        aboutText: 'This is where our journey began, with a passion for quality products.',
-        contactPhone: '+91 999 999 9999',
-        contactEmail: 'hello@store.com',
-        whatsappNumber: '919999999999',
-        footerDesc: `Created with Webrazeo.`
+        heroTitle: content?.heroTitle || `Welcome to ${siteName}`,
+        heroSubtitle: content?.heroSubtitle || 'Start shopping our amazing collection now.',
+        aboutTitle: content?.aboutTitle || 'Our Story',
+        aboutText: content?.aboutText || 'This is where our journey began, with a passion for quality products.',
+        contactPhone: content?.contactPhone || '+91 999 999 9999',
+        contactEmail: content?.contactEmail || 'hello@store.com',
+        whatsappNumber: content?.whatsappNumber || '919999999999',
+        footerDesc: content?.footerDesc || `Created with Webzio.`,
+        primaryColor: content?.primaryColor || '#6366f1',
+        ...content
       }
     })
 
@@ -88,9 +101,26 @@ export async function POST(req: Request) {
       })
     }
 
-    return NextResponse.json({ success: true, website, message: 'Store created successfully! Check your email for details.' })
+    return NextResponse.json({
+      success: true,
+      website,
+      message: 'Store created successfully! Check your email for details.'
+    })
   } catch (error: any) {
     console.error('Store creation error:', error)
-    return NextResponse.json({ success: false, message: error.message || 'Failed to create store' }, { status: 400 })
+
+    // Handle duplicate key error (slug already exists)
+    if (error.code === 11000 && error.keyPattern?.slug) {
+      return NextResponse.json({
+        success: false,
+        message: 'This domain name is already taken. Please choose a different domain name.',
+        slugTaken: true
+      }, { status: 400 })
+    }
+
+    return NextResponse.json({
+      success: false,
+      message: error.message || 'Failed to create store'
+    }, { status: 400 })
   }
 }

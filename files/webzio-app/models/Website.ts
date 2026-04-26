@@ -11,7 +11,7 @@ export interface IWebsite extends Document {
   userId: mongoose.Types.ObjectId
   siteName: string
   slug: string
-  templateId: number
+  templateId: mongoose.Types.ObjectId
   templateCategory: string
   content: {
     logo: string
@@ -58,44 +58,44 @@ const PageSchema = new Schema<IPage>({
 })
 
 const WebsiteSchema = new Schema<IWebsite>({
-  userId:     { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  siteName:   { type: String, required: true, trim: true },
-  slug:       { type: String, required: true, unique: true, lowercase: true, trim: true },
-  templateId: { type: Number, required: true, min: 1 },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  siteName: { type: String, required: true, trim: true },
+  slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  templateId: { type: Schema.Types.ObjectId, ref: 'Template', required: true },
   templateCategory: { type: String, default: '' },
   content: {
-    logo:           { type: String, default: '' },
-    heroTitle:      { type: String, default: 'Welcome to Our Store' },
-    heroSubtitle:   { type: String, default: 'Discover our amazing collection' },
-    heroImage:      { type: String, default: '' },
-    aboutTitle:     { type: String, default: 'About Us' },
-    aboutText:      { type: String, default: 'We are passionate about quality.' },
-    aboutImage:     { type: String, default: '' },
-    contactPhone:   { type: String, default: '' },
-    contactEmail:   { type: String, default: '' },
+    logo: { type: String, default: '' },
+    heroTitle: { type: String, default: 'Welcome to Our Store' },
+    heroSubtitle: { type: String, default: 'Discover our amazing collection' },
+    heroImage: { type: String, default: '' },
+    aboutTitle: { type: String, default: 'About Us' },
+    aboutText: { type: String, default: 'We are passionate about quality.' },
+    aboutImage: { type: String, default: '' },
+    contactPhone: { type: String, default: '' },
+    contactEmail: { type: String, default: '' },
     contactAddress: { type: String, default: '' },
     whatsappNumber: { type: String, default: '' },
-    footerDesc:     { type: String, default: 'Quality products delivered to you.' },
-    primaryColor:   { type: String, default: '#6366f1' },
-    seoTitle:       { type: String, default: '' },
+    footerDesc: { type: String, default: 'Quality products delivered to you.' },
+    primaryColor: { type: String, default: '#6366f1' },
+    seoTitle: { type: String, default: '' },
     seoDescription: { type: String, default: '' },
-    favicon:        { type: String, default: '' },
+    favicon: { type: String, default: '' },
     socialLinks: {
-      facebook:  { type: String, default: '' },
+      facebook: { type: String, default: '' },
       instagram: { type: String, default: '' },
-      twitter:   { type: String, default: '' },
-      youtube:   { type: String, default: '' },
-      linkedin:  { type: String, default: '' },
+      twitter: { type: String, default: '' },
+      youtube: { type: String, default: '' },
+      linkedin: { type: String, default: '' },
     },
   },
-  gallery:     { type: [String], default: [] },
-  pages:       { type: [PageSchema], default: [] },
-  isActive:    { type: Boolean, default: true },
-  isEnabled:   { type: Boolean, default: true },
+  gallery: { type: [String], default: [] },
+  pages: { type: [PageSchema], default: [] },
+  isActive: { type: Boolean, default: true },
+  isEnabled: { type: Boolean, default: true },
   isPublished: { type: Boolean, default: false },
-  views:       { type: Number, default: 0 },
-  leads:       { type: Number, default: 0 },
-  orders:      { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
+  leads: { type: Number, default: 0 },
+  orders: { type: Number, default: 0 },
 }, { timestamps: true })
 
 WebsiteSchema.index({ userId: 1 })

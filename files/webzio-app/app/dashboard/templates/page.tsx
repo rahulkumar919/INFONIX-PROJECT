@@ -331,7 +331,7 @@ export default function TemplatesPage() {
                 <input
                   type="text"
                   value={storeForm.siteName}
-                  onChange={(e) => setStoreForm({ ...storeForm, siteName: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') })}
+                  onChange={(e) => setStoreForm({ ...storeForm, siteName: e.target.value })}
                   placeholder="My Awesome Store"
                   style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: 8, fontSize: '.9rem', outline: 'none' }}
                 />
@@ -340,14 +340,46 @@ export default function TemplatesPage() {
               <div>
                 <label style={{ display: 'block', fontSize: '.9rem', fontWeight: 600, color: '#374151', marginBottom: 6 }}>Domain Name *</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ color: '#64748b', fontSize: '.9rem' }}>localhost/</span>
+                  <span style={{ color: '#64748b', fontSize: '.9rem', fontWeight: 600 }}>localhost/</span>
                   <input
                     type="text"
                     value={storeForm.slug}
-                    onChange={(e) => setStoreForm({ ...storeForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') })}
+                    onChange={async (e) => {
+                      const value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+                      setStoreForm({ ...storeForm, slug: value })
+
+                      // Check domain availability if value is not empty
+                      if (value.length > 2) {
+                        try {
+                          const response = await fetch(`/api/websites/check-domain?slug=${value}`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                          })
+                          const data = await response.json()
+
+                          // Show availability status with visual feedback
+                          const input = e.target
+                          if (data.available) {
+                            input.style.borderColor = '#10b981'
+                            input.style.backgroundColor = '#f0fdf4'
+                          } else {
+                            input.style.borderColor = '#ef4444'
+                            input.style.backgroundColor = '#fef2f2'
+                          }
+                        } catch (error) {
+                          console.error('Error checking domain:', error)
+                        }
+                      } else {
+                        // Reset styling if too short
+                        e.target.style.borderColor = '#e5e7eb'
+                        e.target.style.backgroundColor = '#fff'
+                      }
+                    }}
                     placeholder="my-store"
-                    style={{ flex: 1, padding: '12px', border: '2px solid #e5e7eb', borderRadius: 8, fontSize: '.9rem', outline: 'none' }}
+                    style={{ flex: 1, padding: '12px', border: '2px solid #e5e7eb', borderRadius: 8, fontSize: '.9rem', outline: 'none', transition: 'all 0.3s' }}
                   />
+                </div>
+                <div style={{ fontSize: '.75rem', color: '#64748b', marginTop: 4 }}>
+                  💡 Choose a unique domain name (green = available, red = taken)
                 </div>
               </div>
 
@@ -492,6 +524,9 @@ export default function TemplatesPage() {
 
                     const data = await response.json()
                     if (data.success) {
+                      // Show success message
+                      alert('🎉 Store created successfully! Check your email for details.')
+
                       setShowTemplateConfig(false)
                       // Reset form
                       setStoreForm({
@@ -507,14 +542,21 @@ export default function TemplatesPage() {
                         footerDesc: ''
                       })
                       // Redirect to the new store
-                      window.open(`/${data.website.slug}`, '_blank')
+                      window.open(`/store/${data.website.slug}`, '_blank')
                       router.push('/dashboard/stores')
                     } else {
-                      alert(data.message || 'Failed to create store')
+                      // Handle specific error cases
+                      if (data.slugTaken) {
+                        alert('❌ This domain name is already taken. Please choose a different domain name.')
+                      } else if (data.needsUpgrade) {
+                        alert(`❌ ${data.message}`)
+                      } else {
+                        alert(`❌ ${data.message || 'Failed to create store'}`)
+                      }
                     }
                   } catch (error) {
                     console.error('Error creating store:', error)
-                    alert('Failed to create store')
+                    alert('❌ Failed to create store. Please try again.')
                   }
                 }}
                 style={{
