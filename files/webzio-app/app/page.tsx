@@ -759,7 +759,7 @@ export default function HomePage() {
         @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
         @keyframes cursorBlink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .animated-bg { background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899, #f97316); }
+        .animated-bg { background: linear-gradient(135deg, #FDF1F1, #FFE5E5, #FDF1F1); }
         .scroll-wrap { cursor: grab; user-select: none; }
         .scroll-wrap:active { cursor: grabbing; }
         .scroll-track { display: flex; animation: none; }
@@ -789,7 +789,7 @@ export default function HomePage() {
       <MobileNav navLinks={navLinks} activeSection={activeSection} navScrolled={navScrolled} />
 
       {/* ── HERO ── */}
-      <section style={{ padding: '80px 4% 80px', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: '80px 4% 80px', background: '#FDF1F1', position: 'relative', overflow: 'hidden' }}>
 
         {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'center', position: 'relative', zIndex: 1 }}>
@@ -885,7 +885,7 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER — After Hero ── */}
-      <section style={{ padding: '20px 6%', background: '#f8f7ff' }}>
+      <section style={{ padding: '20px 6%', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #eef2ff 0%, #e0e7ff 50%, #ede9fe 100%)',
@@ -929,8 +929,8 @@ export default function HomePage() {
       </section>
 
       {/* ── STATS ── */}
-      <div ref={statsRef} style={{ background: 'linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%)', padding: '52px 6%', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%,rgba(99,102,241,.3),transparent 70%)', pointerEvents: 'none' }} />
+      <div ref={statsRef} style={{ background: '#FDF1F1', padding: '52px 6%', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%,rgba(255,182,193,.15),transparent 70%)', pointerEvents: 'none' }} />
         <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20, maxWidth: 900, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           {[
             { val: stores, suf: '+', label: 'Stores Created', icon: '🏪', pct: stores / 12 },
@@ -940,13 +940,13 @@ export default function HomePage() {
           ].map((s, i) => (
             <div key={i} style={{ animation: statsVisible ? `popIn .5s ease ${i * 120}ms both` : 'none' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: 6 }}>{s.icon}</div>
-              <div style={{ fontSize: 'clamp(1.6rem,3vw,2.3rem)', fontWeight: 900, color: '#fff', fontFamily: '"Playfair Display",serif', lineHeight: 1 }}>
+              <div style={{ fontSize: 'clamp(1.6rem,3vw,2.3rem)', fontWeight: 900, color: '#1e1b4b', fontFamily: '"Playfair Display",serif', lineHeight: 1 }}>
                 {s.val.toLocaleString()}{s.suf}
               </div>
-              <div style={{ fontSize: '.78rem', color: '#c7d2fe', marginTop: 5, fontWeight: 500, marginBottom: 10 }}>{s.label}</div>
+              <div style={{ fontSize: '.78rem', color: '#6b7280', marginTop: 5, fontWeight: 500, marginBottom: 10 }}>{s.label}</div>
               {/* progress bar */}
-              <div style={{ height: 4, background: 'rgba(255,255,255,.15)', borderRadius: 2, overflow: 'hidden' }}>
-                <div style={{ height: '100%', background: 'linear-gradient(90deg,#818cf8,#ec4899)', borderRadius: 2, width: statsVisible ? `${Math.min(s.pct, 100)}%` : '0%', transition: 'width 2s cubic-bezier(.4,0,.2,1)' }} />
+              <div style={{ height: 4, background: 'rgba(107,114,128,.15)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: 'linear-gradient(90deg,#ec4899,#f97316)', borderRadius: 2, width: statsVisible ? `${Math.min(s.pct, 100)}%` : '0%', transition: 'width 2s cubic-bezier(.4,0,.2,1)' }} />
               </div>
             </div>
           ))}
@@ -958,14 +958,14 @@ export default function HomePage() {
         <div ref={tickerScroll.wrapRef} className="scroll-wrap" style={{ overflow: 'hidden' }}>
           <div ref={tickerScroll.trackRef} className="scroll-track">
             {Array(3).fill(['🍴 Restaurant Menus', '🏨 Hotel Rooms', '💊 Pharmacy Catalog', '💪 Gym Classes', '💅 Salon Services', '🏠 Real Estate', '📸 Photography', '👗 Clothing Store', '🛒 Grocery Shop', '🏥 Medical Clinic', '🚀 Startup Landing', '👨‍💻 Developer Portfolio']).flat().map((t, i) => (
-              <span key={i} style={{ color: '#fff', fontSize: '.78rem', fontWeight: 700, letterSpacing: '.07em', padding: '0 24px', whiteSpace: 'nowrap' }}>{t} &nbsp;·</span>
+              <span key={i} style={{ color: '#6b7280', fontSize: '.78rem', fontWeight: 700, letterSpacing: '.07em', padding: '0 24px', whiteSpace: 'nowrap' }}>{t} &nbsp;·</span>
             ))}
           </div>
         </div>
       </div>
 
       {/* ── TEMPLATES ── */}
-      <section id="templates" style={{ padding: '88px 0', background: '#fafafa', overflow: 'hidden' }}>
+      <section id="templates" style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 44, padding: '0 6%' }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>
             {templatesLoading ? 'Loading...' : `${templates.length} Templates`}
@@ -1062,7 +1062,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HOW TO SETUP WEBSITE ── */}
-      <section style={{ padding: '88px 6%', background: '#fff5f5' }}>
+      <section style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#fef2f2', color: '#FF6B7A', marginBottom: 14 }}>How it works</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em' }}>How To Setup Website</h2>
@@ -1216,7 +1216,7 @@ export default function HomePage() {
       <HowItWorks />
 
       {/* ── PRICING ── */}
-      <section id="pricing" style={{ padding: '88px 6%', background: '#fff' }}>
+      <section id="pricing" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Pricing</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif' }}>Start free, grow at your pace</h2>
@@ -1271,7 +1271,7 @@ export default function HomePage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section style={{ padding: '88px 0', background: '#f8f7ff', overflow: 'hidden' }}>
+      <section style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 44, padding: '0 6%' }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Real stories</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', color: '#111' }}>Owners love Webrazeo</h2>
@@ -1299,7 +1299,7 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER 1 ── */}
-      <section style={{ padding: '28px 6%', background: '#fff' }}>
+      <section style={{ padding: '28px 6%', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #e8eeff 0%, #dbeafe 60%, #c7d2fe 100%)',
@@ -1343,7 +1343,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" style={{ padding: '88px 6%', background: '#fff' }}>
+      <section id="faq" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>FAQ</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', color: '#111' }}>Common questions, honest answers</h2>
@@ -1355,7 +1355,7 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER 2 ── */}
-      <section style={{ padding: '28px 6% 56px', background: '#fff' }}>
+      <section style={{ padding: '28px 6% 56px', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #f5f3ff 0%, #ede9fe 50%, #ddd6fe 100%)',
@@ -1447,7 +1447,7 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ padding: '88px 6%', background: 'linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 70%,#1e1b4b 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: '88px 6%', background: 'linear-gradient(135deg,#FDF1F1 0%,#FFE5E5 50%,#FDF1F1 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', width: 700, height: 700, background: 'radial-gradient(circle,rgba(129,140,248,.25),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: '-60px', right: '-60px', width: 300, height: 300, background: 'radial-gradient(circle,rgba(236,72,153,.2),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
         <Reveal style={{ position: 'relative', zIndex: 1 }}>
