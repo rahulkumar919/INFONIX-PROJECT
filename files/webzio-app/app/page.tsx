@@ -711,14 +711,14 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={80}>
-              <h1 style={{ fontSize: 'clamp(2rem,3.8vw,3.5rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: 20, letterSpacing: '-.04em', fontFamily: '"Playfair Display",serif', minHeight: 'clamp(9rem,18vw,14rem)' }}>
+              <h1 style={{ fontSize: 'clamp(2.2rem,4.2vw,4rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: 24, letterSpacing: '-.03em', fontFamily: '"Playfair Display",serif' }}>
                 Turn your business into a<br />
                 <span style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed,#ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                  <span style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontStyle: 'italic' }}>
                     stunning website
                   </span>
                   {/* Underline animation */}
-                  <span style={{ position: 'absolute', bottom: -4, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg,#4f46e5,#ec4899)', borderRadius: 2, animation: 'expandWidth 1s ease .5s both' }} />
+                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg,#7c3aed,#a855f7)', borderRadius: 2, animation: 'expandWidth 1s ease .5s both' }} />
                 </span>
                 <br />
                 <TypeWriter words={['in 5 minutes', 'without any code', 'with WhatsApp orders', 'completely free']} />
@@ -726,8 +726,8 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={180}>
-              <p style={{ fontSize: '.97rem', color: '#4b5563', lineHeight: 1.95, marginBottom: 32, maxWidth: 460 }}>
-                Webrazeo gives every restaurant, hotel, pharmacy & local shop a <strong style={{ color: '#4f46e5' }}>professional website</strong> with menu, WhatsApp ordering, SEO & analytics — all in one place.
+              <p style={{ fontSize: '1.05rem', color: '#64748b', lineHeight: 1.85, marginBottom: 32, maxWidth: 520 }}>
+                Webrazeo gives every restaurant, hotel, pharmacy & local shop <span style={{ color: '#111', fontWeight: 600 }}>a professional website</span> with menu, WhatsApp ordering, SEO & analytics — all in one place.
               </p>
             </Reveal>
 
