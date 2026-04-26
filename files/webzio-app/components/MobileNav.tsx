@@ -74,20 +74,20 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                 }
                 .nav-cta {
                     padding: 9px 22px;
-                    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+                    background: linear-gradient(135deg, #FF6B7A, #FF8A94);
                     color: #fff !important;
                     border-radius: 50px;
                     font-size: .85rem;
                     font-weight: 700;
                     text-decoration: none;
-                    box-shadow: 0 4px 14px rgba(79,70,229,.35);
+                    box-shadow: 0 4px 14px rgba(255,107,122,.35);
                     transition: all .22s ease;
                     letter-spacing: -.01em;
                     white-space: nowrap;
                 }
                 .nav-cta:hover {
                     transform: translateY(-1px);
-                    box-shadow: 0 6px 20px rgba(79,70,229,.45);
+                    box-shadow: 0 6px 20px rgba(255,107,122,.45);
                 }
                 .nav-login {
                     padding: 9px 18px;
@@ -137,11 +137,11 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                 padding: '0 5%',
                 height: 64,
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                background: navScrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.5)',
+                background: navScrolled ? 'rgba(253,241,241,0.95)' : 'rgba(253,241,241,0.7)',
                 backdropFilter: 'blur(24px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-                borderBottom: navScrolled ? '1px solid rgba(0,0,0,.06)' : '1px solid rgba(255,255,255,.4)',
-                boxShadow: navScrolled ? '0 2px 20px rgba(0,0,0,.06)' : 'none',
+                borderBottom: navScrolled ? '1px solid rgba(255,107,122,.15)' : '1px solid rgba(255,107,122,.08)',
+                boxShadow: navScrolled ? '0 2px 20px rgba(255,107,122,.08)' : 'none',
                 transition: 'all .35s ease',
                 animation: 'navFadeDown .5s ease',
             }}>

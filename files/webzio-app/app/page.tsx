@@ -792,30 +792,102 @@ export default function HomePage() {
       <section style={{ padding: '80px 4% 80px', background: '#FDF1F1', position: 'relative', overflow: 'hidden' }}>
 
         {/* Hero Heading */}
-        <div style={{ textAlign: 'center', marginBottom: 48, animation: 'fadeIn .6s ease' }}>
+        <div style={{ textAlign: 'center', marginBottom: 48, animation: 'fadeIn .6s ease', position: 'relative' }}>
+          {/* Small badge text */}
+          <div style={{
+            display: 'inline-block',
+            padding: '6px 20px',
+            background: 'rgba(255, 107, 122, 0.1)',
+            border: '1px solid rgba(255, 107, 122, 0.3)',
+            borderRadius: 50,
+            fontSize: '.8rem',
+            fontWeight: 600,
+            color: '#FF6B7A',
+            marginBottom: 20,
+            letterSpacing: '.05em'
+          }}>
+            No #01 Digital Services Website
+          </div>
+
+          {/* Main heading */}
           <h1 style={{
-            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+            fontSize: 'clamp(2.2rem, 5vw, 4rem)',
             fontWeight: 900,
             fontFamily: '"Playfair Display", serif',
-            background: 'linear-gradient(135deg, #ec4899, #f97316, #ec4899)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: '#1a1a1a',
             letterSpacing: '-.02em',
-            lineHeight: 1.2,
-            marginBottom: 12
+            lineHeight: 1.15,
+            marginBottom: 24,
+            maxWidth: 900,
+            margin: '0 auto 24px'
           }}>
-            Build Your Dream Website With Webrazeo
+            Build Your Dream<br />
+            Website With Webrazeo
           </h1>
+
+          {/* Curved line decoration */}
+          <svg style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -20%)', width: '800px', height: '200px', pointerEvents: 'none', opacity: 0.3 }} viewBox="0 0 800 200">
+            <path d="M 50 100 Q 400 50, 750 100" stroke="#FF6B7A" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+          </svg>
+
+          {/* Subtext */}
           <p style={{
-            fontSize: 'clamp(.95rem, 2vw, 1.1rem)',
+            fontSize: 'clamp(.95rem, 2vw, 1.05rem)',
             color: '#6b7280',
             maxWidth: 600,
-            margin: '0 auto',
-            fontWeight: 500
+            margin: '0 auto 32px',
+            fontWeight: 400,
+            lineHeight: 1.6
           }}>
-            Create stunning, professional websites in minutes with our easy-to-use platform
+            We are elite author at envato. We help you to build your own booking website easy way
           </p>
+
+          {/* CTA Buttons */}
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Link href="/signup" style={{
+              padding: '14px 32px',
+              background: 'linear-gradient(135deg, #FF6B7A, #FF8A94)',
+              color: '#fff',
+              borderRadius: 8,
+              textDecoration: 'none',
+              fontWeight: 700,
+              fontSize: '.95rem',
+              boxShadow: '0 4px 20px rgba(255, 107, 122, 0.3)',
+              transition: 'all .3s ease',
+              border: 'none'
+            }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 25px rgba(255, 107, 122, 0.4)'
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(255, 107, 122, 0.3)'
+              }}
+            >
+              Build Your Website
+            </Link>
+            <Link href="/templates" style={{
+              padding: '14px 32px',
+              background: 'transparent',
+              color: '#FF6B7A',
+              borderRadius: 8,
+              textDecoration: 'none',
+              fontWeight: 700,
+              fontSize: '.95rem',
+              border: '2px solid #FF6B7A',
+              transition: 'all .3s ease'
+            }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255, 107, 122, 0.05)'
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background = 'transparent'
+              }}
+            >
+              View Demo
+            </Link>
+          </div>
         </div>
 
         {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
