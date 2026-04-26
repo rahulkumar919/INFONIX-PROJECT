@@ -679,182 +679,99 @@ export default function HomePage() {
       {/* ── NAV ── */}
       <MobileNav navLinks={navLinks} activeSection={activeSection} navScrolled={navScrolled} />
 
-      {/* ── HERO ── */}
-      <section style={{ padding: '120px 6% 80px', background: 'linear-gradient(135deg,#eef2ff 0%,#fdf4ff 35%,#fff1f2 65%,#f0fdf4 100%)', position: 'relative', overflow: 'hidden' }}>
-        {/* animated particles */}
-        {[
-          { w: 12, h: 12, top: '12%', left: '6%', bg: '#4f46e5', dur: '6s', delay: '0s' },
-          { w: 8, h: 8, top: '20%', left: '90%', bg: '#ec4899', dur: '8s', delay: '1s' },
-          { w: 16, h: 16, top: '55%', left: '4%', bg: '#7c3aed', dur: '7s', delay: '2s' },
-          { w: 10, h: 10, top: '65%', left: '93%', bg: '#f97316', dur: '9s', delay: '0.5s' },
-          { w: 6, h: 6, top: '35%', left: '96%', bg: '#ec4899', dur: '5s', delay: '3s' },
-          { w: 14, h: 14, top: '78%', left: '12%', bg: '#4f46e5', dur: '7s', delay: '1.5s' },
-        ].map((p, i) => (
-          <div key={i} className="particle" style={{ width: p.w, height: p.h, top: p.top, left: p.left, background: p.bg, opacity: .7, position: 'absolute', borderRadius: '50%', pointerEvents: 'none', animation: `particleFloat ${p.dur} ${p.delay} ease-in-out infinite` }} />
-        ))}
-        {/* bg blobs */}
-        <div style={{ position: 'absolute', top: -120, right: -80, width: 500, height: 500, background: 'radial-gradient(circle,rgba(79,70,229,.18),transparent 68%)', borderRadius: '50%', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -100, left: -80, width: 400, height: 400, background: 'radial-gradient(circle,rgba(236,72,153,.14),transparent 68%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                  {/* ── HERO ── */}
+      <section style={{ padding: '60px 4% 80px', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+        
+        {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'center', position: 'relative', zIndex: 1 }}>
 
-        {/* ── SPLIT LAYOUT ── */}
-        <div className="hero-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center', position: 'relative', zIndex: 1 }}>
-
-          {/* LEFT — Content */}
-          <div>
-            <Reveal>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'linear-gradient(135deg,#eef2ff,#fdf4ff)', border: '1px solid #c7d2fe', padding: '7px 16px', borderRadius: 50, marginBottom: 24 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'linear-gradient(135deg,#4f46e5,#ec4899)', display: 'inline-block', animation: 'blink 1.5s ease-in-out infinite', flexShrink: 0 }} />
-                <span style={{ fontSize: '.72rem', fontWeight: 800, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', letterSpacing: '.04em' }}>
-                  🚀 No Code · No Designer · No Hosting Needed
-                </span>
+          {/* LEFT — 2 Template Images */}
+          <Reveal>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 16, 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                border: '2px solid #f0f0f0',
+                transition: 'transform 0.3s ease'
+              }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop" 
+                  alt="Business Template 1"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                />
               </div>
-            </Reveal>
 
-            <Reveal delay={80}>
-              <h1 style={{ fontSize: 'clamp(2.2rem,4.2vw,4rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: 24, letterSpacing: '-.03em', fontFamily: '"Playfair Display",serif' }}>
-                Turn your business into a<br />
-                <span style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontStyle: 'italic' }}>
-                    stunning website
-                  </span>
-                  {/* Underline animation */}
-                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg,#7c3aed,#a855f7)', borderRadius: 2, animation: 'expandWidth 1s ease .5s both' }} />
-                </span>
-                <br />
-                <TypeWriter words={['in 5 minutes', 'without any code', 'with WhatsApp orders', 'completely free']} />
-              </h1>
-            </Reveal>
-
-            <Reveal delay={180}>
-              <p style={{ fontSize: '1.05rem', color: '#64748b', lineHeight: 1.85, marginBottom: 32, maxWidth: 520 }}>
-                Webrazeo gives every restaurant, hotel, pharmacy & local shop <span style={{ color: '#111', fontWeight: 600 }}>a professional website</span> with menu, WhatsApp ordering, SEO & analytics — all in one place.
-              </p>
-            </Reveal>
-
-            {/* Animated feature pills */}
-            <Reveal delay={260}>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
-                {[
-                  { icon: '⚡', text: 'Live in 5 min', color: '#4f46e5' },
-                  { icon: '💬', text: 'WhatsApp Orders', color: '#25D366' },
-                  { icon: '🔍', text: 'Google SEO', color: '#ea580c' },
-                  { icon: '📊', text: 'Analytics', color: '#7c3aed' },
-                ].map((f, i) => (
-                  <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: `${f.color}10`, border: `1px solid ${f.color}30`, borderRadius: 50, fontSize: '.78rem', fontWeight: 700, color: f.color, animation: `fadeIn .4s ease ${i * 80 + 260}ms both` }}>
-                    <span>{f.icon}</span>{f.text}
-                  </div>
-                ))}
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 16, 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                border: '2px solid #f0f0f0',
+                transition: 'transform 0.3s ease'
+              }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop" 
+                  alt="Business Template 2"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                />
               </div>
-            </Reveal>
+            </div>
+          </Reveal>
 
-            <Reveal delay={340}>
-              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 28 }}>
-
-                {/* CTA 1 — Primary Liquid Glass */}
-                <Link href="/signup" style={{ textDecoration: 'none', display: 'inline-block' }}>
-                  <div style={{
-                    position: 'relative', padding: '14px 32px', borderRadius: 16,
-                    background: 'linear-gradient(135deg, rgba(79,70,229,0.9), rgba(124,58,237,0.85))',
-                    backdropFilter: 'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                    border: '1px solid rgba(255,255,255,0.35)',
-                    boxShadow: '0 8px 32px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.1)',
-                    cursor: 'pointer', overflow: 'hidden',
-                    transition: 'all .25s ease',
-                  }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLDivElement
-                      el.style.transform = 'translateY(-2px)'
-                      el.style.boxShadow = '0 14px 40px rgba(79,70,229,0.55), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.1)'
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLDivElement
-                      el.style.transform = 'translateY(0)'
-                      el.style.boxShadow = '0 8px 32px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    {/* Shine sweep */}
-                    <div style={{ position: 'absolute', top: 0, left: '-100%', width: '60%', height: '100%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', transform: 'skewX(-20deg)', animation: 'shineSweep 3s ease-in-out infinite', pointerEvents: 'none' }} />
-                    {/* Top highlight */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent)', pointerEvents: 'none' }} />
-                    <span style={{ position: 'relative', zIndex: 1, fontSize: '.97rem', fontWeight: 800, color: '#fff', letterSpacing: '-.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span>🚀</span> Build My Website Free
-                      <span style={{ fontSize: '1rem' }}>→</span>
-                    </span>
-                  </div>
-                </Link>
-
-                {/* CTA 2 — Secondary Liquid Glass */}
-                <Link href="/store/demo" style={{ textDecoration: 'none', display: 'inline-block' }}>
-                  <div style={{
-                    position: 'relative', padding: '14px 32px', borderRadius: 16,
-                    background: 'rgba(255,255,255,0.55)',
-                    backdropFilter: 'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                    border: '1px solid rgba(255,255,255,0.7)',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.04)',
-                    cursor: 'pointer', overflow: 'hidden',
-                    transition: 'all .25s ease',
-                  }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLDivElement
-                      el.style.transform = 'translateY(-2px)'
-                      el.style.background = 'rgba(255,255,255,0.75)'
-                      el.style.boxShadow = '0 14px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -1px 0 rgba(0,0,0,0.04)'
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLDivElement
-                      el.style.transform = 'translateY(0)'
-                      el.style.background = 'rgba(255,255,255,0.55)'
-                      el.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.04)'
-                    }}
-                  >
-                    {/* Top highlight */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent)', pointerEvents: 'none' }} />
-                    <span style={{ position: 'relative', zIndex: 1, fontSize: '.97rem', fontWeight: 700, color: '#1e1b4b', letterSpacing: '-.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span>👁</span> See Live Demo
-                    </span>
-                  </div>
-                </Link>
-
-              </div>
-            </Reveal>
-
-            <Reveal delay={420}>
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
-                {['No credit card', 'Free forever plan', 'Setup in 5 minutes'].map(t => (
-                  <span key={t} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '.8rem', color: '#6b7280', fontWeight: 500 }}>
-                    <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.6rem', color: '#16a34a', fontWeight: 900, flexShrink: 0 }}>✓</span>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-
-            {/* Social proof */}
-            <Reveal delay={500}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(255,255,255,.7)', borderRadius: 14, border: '1px solid #e5e7eb', backdropFilter: 'blur(8px)', width: 'fit-content' }}>
-                {/* Avatars */}
-                <div style={{ display: 'flex' }}>
-                  {['#f97316', '#8b5cf6', '#10b981', '#0ea5e9', '#ec4899'].map((c, i) => (
-                    <div key={i} style={{ width: 28, height: 28, borderRadius: '50%', background: `linear-gradient(135deg,${c},${c}99)`, border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.65rem', color: '#fff', fontWeight: 800, zIndex: 5 - i }}>
-                      {['R', 'P', 'A', 'S', 'V'][i]}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <div style={{ fontSize: '.78rem', fontWeight: 700, color: '#111' }}>1,200+ businesses already live</div>
-                  <div style={{ display: 'flex', gap: 2, marginTop: 1 }}>
-                    {[1, 2, 3, 4, 5].map(s => <span key={s} style={{ color: '#f59e0b', fontSize: '.65rem' }}>★</span>)}
-                    <span style={{ fontSize: '.65rem', color: '#6b7280', marginLeft: 4 }}>4.9/5 rating</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+          {/* CENTER — Laptop Showcase (UNCHANGED) */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LaptopShowcase />
           </div>
 
-          {/* RIGHT — Laptop Mockup with auto-scrolling websites */}
-          <LaptopShowcase />
+          {/* RIGHT — 2 Template Images */}
+          <Reveal delay={200}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 16, 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                border: '2px solid #f0f0f0',
+                transition: 'transform 0.3s ease'
+              }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop" 
+                  alt="Business Template 3"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
+
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 16, 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                border: '2px solid #f0f0f0',
+                transition: 'transform 0.3s ease'
+              }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop" 
+                  alt="Business Template 4"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
+            </div>
+          </Reveal>
+
         </div>
       </section>
 
