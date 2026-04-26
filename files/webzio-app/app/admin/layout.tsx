@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { label: 'Stores', icon: '🏪', path: '/admin/stores' },
   { label: 'Templates', icon: '🎨', path: '/admin/templates' },
   { label: 'Categories', icon: '📁', path: '/admin/categories' },
+  { label: 'Hero Banner', icon: '🎯', path: '/admin/hero-banner' },
   { label: 'Portfolio', icon: '🖼️', path: '/admin/portfolio' },
   { label: 'Reports', icon: '📈', path: '/admin/reports' },
 ]

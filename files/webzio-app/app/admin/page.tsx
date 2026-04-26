@@ -80,12 +80,13 @@ export default function AdminDashboard() {
   ]
 
   const quickLinks = [
-    { label: 'Manage Users',   icon: '👥', path: '/admin/users',      desc: 'View, activate or deactivate users',  color: C.purple },
-    { label: 'Manage Stores',  icon: '🏪', path: '/admin/stores',     desc: 'Enable, disable or delete stores',    color: C.blue },
-    { label: 'Templates',      icon: '🎨', path: '/admin/templates',  desc: 'Add & manage templates',              color: C.amber },
-    { label: 'Categories',     icon: '📁', path: '/admin/categories', desc: 'Manage template categories',          color: C.green },
-    { label: 'Portfolio',      icon: '🖼️', path: '/admin/portfolio',  desc: 'Portfolio template section',          color: C.pink },
-    { label: 'Reports',        icon: '📈', path: '/admin/reports',    desc: 'Analytics & growth reports',          color: C.cyan },
+    { label: 'Manage Users', icon: '👥', path: '/admin/users', desc: 'View, activate or deactivate users', color: C.purple },
+    { label: 'Manage Stores', icon: '🏪', path: '/admin/stores', desc: 'Enable, disable or delete stores', color: C.blue },
+    { label: 'Templates', icon: '🎨', path: '/admin/templates', desc: 'Add & manage templates', color: C.amber },
+    { label: 'Categories', icon: '📁', path: '/admin/categories', desc: 'Manage template categories', color: C.green },
+    { label: 'Hero Banner', icon: '🎯', path: '/admin/hero-banner', desc: 'Update homepage hero images', color: C.pink },
+    { label: 'Portfolio', icon: '🖼️', path: '/admin/portfolio', desc: 'Portfolio template section', color: C.cyan },
+    { label: 'Reports', icon: '📈', path: '/admin/reports', desc: 'Analytics & growth reports', color: C.purple },
   ]
 
   return (

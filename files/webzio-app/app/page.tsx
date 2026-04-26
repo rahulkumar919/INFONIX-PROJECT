@@ -360,26 +360,82 @@ function LaptopShowcase() {
         .dot-btn:hover { transform: scale(1.3); }
       `}</style>
 
-      {/* Floating label */}
-      <div style={{ position: 'absolute', top: -16, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', padding: '6px 18px', borderRadius: 50, fontSize: '.72rem', fontWeight: 800, whiteSpace: 'nowrap', boxShadow: '0 4px 14px rgba(79,70,229,.4)', zIndex: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', display: 'inline-block', animation: 'blink 1.5s infinite' }} />
-        Live Preview — {site.category}
+      {/* Live Preview Label - Improved */}
+      <div style={{
+        position: 'absolute',
+        top: -24,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: 'linear-gradient(135deg,#4f46e5,#7c3aed)',
+        color: '#fff',
+        padding: '8px 20px',
+        borderRadius: 50,
+        fontSize: '.8rem',
+        fontWeight: 800,
+        whiteSpace: 'nowrap',
+        boxShadow: '0 6px 20px rgba(79,70,229,.5)',
+        zIndex: 10,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        border: '2px solid rgba(255,255,255,0.2)'
+      }}>
+        <span style={{
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          background: '#4ade80',
+          display: 'inline-block',
+          animation: 'blink 1.5s infinite',
+          boxShadow: '0 0 8px #4ade80'
+        }} />
+        <span>Live Preview</span>
+        <span style={{
+          fontSize: '.7rem',
+          opacity: 0.8,
+          fontWeight: 600,
+          background: 'rgba(255,255,255,0.15)',
+          padding: '2px 8px',
+          borderRadius: 12
+        }}>
+          {site.category}
+        </span>
       </div>
 
       {/* Laptop wrapper */}
-      <div className="laptop-wrap" style={{ maxWidth: 520, margin: '0 auto' }}>
+      <div className="laptop-wrap" style={{ maxWidth: 560, margin: '0 auto' }}>
 
         {/* Laptop body */}
         <div style={{ position: 'relative' }}>
 
-          {/* Screen bezel */}
-          <div className="laptop-screen" style={{ background: 'linear-gradient(145deg,#2d2d2d,#1a1a1a)', borderRadius: '16px 16px 0 0', padding: '12px 12px 0', boxShadow: '0 -4px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1)' }}>
+          {/* Screen bezel - Enhanced laptop look */}
+          <div className="laptop-screen" style={{
+            background: 'linear-gradient(145deg,#2d2d2d,#1a1a1a)',
+            borderRadius: '20px 20px 0 0',
+            padding: '16px 16px 0',
+            boxShadow: '0 -6px 30px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.08)',
+            border: '3px solid #1a1a1a'
+          }}>
 
             {/* Camera dot */}
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#333', margin: '0 auto 8px', boxShadow: 'inset 0 1px 2px rgba(0,0,0,.5)' }} />
+            <div style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, #444, #222)',
+              margin: '0 auto 10px',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,.8), 0 0 2px rgba(255,255,255,.1)',
+              border: '1px solid #111'
+            }} />
 
             {/* Screen */}
-            <div style={{ borderRadius: '8px 8px 0 0', overflow: 'hidden', background: '#fff', position: 'relative' }}>
+            <div style={{
+              borderRadius: '10px 10px 0 0',
+              overflow: 'hidden',
+              background: '#fff',
+              position: 'relative',
+              boxShadow: 'inset 0 0 0 1px rgba(0,0,0,.1)'
+            }}>
 
               {/* Browser chrome */}
               <div style={{ background: '#f1f3f4', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid #e0e0e0' }}>
@@ -395,7 +451,7 @@ function LaptopShowcase() {
               </div>
 
               {/* Scrollable website content */}
-              <div ref={scrollRef} key={activeIdx} className="site-content" style={{ height: 300, overflowY: 'scroll', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <div ref={scrollRef} key={activeIdx} className="site-content" style={{ height: 320, overflowY: 'scroll', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <style>{`.site-content::-webkit-scrollbar{display:none}`}</style>
 
                 {/* Navbar */}
@@ -474,15 +530,55 @@ function LaptopShowcase() {
             </div>
           </div>
 
-          {/* Laptop base */}
-          <div style={{ background: 'linear-gradient(180deg,#3a3a3a,#2a2a2a)', height: 14, borderRadius: '0 0 4px 4px', position: 'relative' }}>
-            <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: 60, height: 4, background: '#222', borderRadius: '0 0 4px 4px' }} />
+          {/* Laptop base - Enhanced */}
+          <div style={{
+            background: 'linear-gradient(180deg,#3a3a3a,#2a2a2a)',
+            height: 16,
+            borderRadius: '0 0 6px 6px',
+            position: 'relative',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,.05)'
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 70,
+              height: 5,
+              background: 'linear-gradient(180deg,#2a2a2a,#1a1a1a)',
+              borderRadius: '0 0 6px 6px',
+              boxShadow: 'inset 0 1px 2px rgba(0,0,0,.5)'
+            }} />
           </div>
           {/* Hinge */}
-          <div style={{ background: 'linear-gradient(180deg,#1a1a1a,#111)', height: 6, borderRadius: '0 0 8px 8px', boxShadow: '0 4px 20px rgba(0,0,0,.4)' }} />
-          {/* Base */}
-          <div style={{ background: 'linear-gradient(180deg,#2d2d2d,#222)', height: 20, borderRadius: '0 0 12px 12px', boxShadow: '0 8px 32px rgba(0,0,0,.3)', position: 'relative' }}>
-            <div style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', width: 80, height: 6, background: '#1a1a1a', borderRadius: 3 }} />
+          <div style={{
+            background: 'linear-gradient(180deg,#1a1a1a,#0a0a0a)',
+            height: 8,
+            borderRadius: '0 0 10px 10px',
+            boxShadow: '0 6px 24px rgba(0,0,0,.5)',
+            border: '1px solid #0a0a0a'
+          }} />
+          {/* Base - Enhanced laptop bottom */}
+          <div style={{
+            background: 'linear-gradient(180deg,#2d2d2d,#1a1a1a)',
+            height: 24,
+            borderRadius: '0 0 16px 16px',
+            boxShadow: '0 10px 40px rgba(0,0,0,.4)',
+            position: 'relative',
+            border: '2px solid #1a1a1a',
+            borderTop: 'none'
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: 6,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 100,
+              height: 8,
+              background: 'linear-gradient(180deg,#1a1a1a,#0a0a0a)',
+              borderRadius: 4,
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,.8)'
+            }} />
           </div>
         </div>
 
@@ -515,6 +611,7 @@ export default function HomePage() {
   const [blogsLoading, setBlogsLoading] = useState(true)
   const [templates, setTemplates] = useState<any[]>([])
   const [templatesLoading, setTemplatesLoading] = useState(true)
+  const [heroBanner, setHeroBanner] = useState<any>(null)
   const statsRef = useRef<HTMLDivElement>(null)
 
   const tplRow1 = useAutoScroll(0.5, 'left')
@@ -573,6 +670,18 @@ export default function HomePage() {
       })
       .catch(() => { })
       .finally(() => setTemplatesLoading(false))
+  }, [])
+
+  // fetch hero banner
+  useEffect(() => {
+    fetch('/api/admin/hero-banner')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && d.banner) {
+          setHeroBanner(d.banner)
+        }
+      })
+      .catch(() => { })
   }, [])
 
   const stores = useCountUp(1200, 2000, statsVisible)
@@ -679,19 +788,19 @@ export default function HomePage() {
       {/* ── NAV ── */}
       <MobileNav navLinks={navLinks} activeSection={activeSection} navScrolled={navScrolled} />
 
-                  {/* ── HERO ── */}
-      <section style={{ padding: '60px 4% 80px', background: '#fff', position: 'relative', overflow: 'hidden' }}>
-        
+      {/* ── HERO ── */}
+      <section style={{ padding: '80px 4% 80px', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+
         {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'center', position: 'relative', zIndex: 1 }}>
 
           {/* LEFT — 2 Template Images */}
           <Reveal>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ 
-                background: '#fff', 
-                borderRadius: 16, 
-                overflow: 'hidden', 
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                overflow: 'hidden',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 border: '2px solid #f0f0f0',
                 transition: 'transform 0.3s ease'
@@ -699,17 +808,17 @@ export default function HomePage() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop" 
+                <img
+                  src={heroBanner?.topLeftImage || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop"}
                   alt="Business Template 1"
                   style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
                 />
               </div>
 
-              <div style={{ 
-                background: '#fff', 
-                borderRadius: 16, 
-                overflow: 'hidden', 
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                overflow: 'hidden',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 border: '2px solid #f0f0f0',
                 transition: 'transform 0.3s ease'
@@ -717,8 +826,8 @@ export default function HomePage() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop" 
+                <img
+                  src={heroBanner?.bottomLeftImage || "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop"}
                   alt="Business Template 2"
                   style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
                 />
@@ -734,10 +843,10 @@ export default function HomePage() {
           {/* RIGHT — 2 Template Images */}
           <Reveal delay={200}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ 
-                background: '#fff', 
-                borderRadius: 16, 
-                overflow: 'hidden', 
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                overflow: 'hidden',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 border: '2px solid #f0f0f0',
                 transition: 'transform 0.3s ease'
@@ -745,17 +854,17 @@ export default function HomePage() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop" 
+                <img
+                  src={heroBanner?.topRightImage || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop"}
                   alt="Business Template 3"
                   style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
                 />
               </div>
 
-              <div style={{ 
-                background: '#fff', 
-                borderRadius: 16, 
-                overflow: 'hidden', 
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                overflow: 'hidden',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 border: '2px solid #f0f0f0',
                 transition: 'transform 0.3s ease'
@@ -763,8 +872,8 @@ export default function HomePage() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop" 
+                <img
+                  src={heroBanner?.bottomRightImage || "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop"}
                   alt="Business Template 4"
                   style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
                 />
@@ -1524,9 +1633,11 @@ export default function HomePage() {
       </footer>
 
       {/* ── BACK TO TOP ── */}
-      {showBackTop && (
-        <button className="back-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Back to top">↑</button>
-      )}
-    </div>
+      {
+        showBackTop && (
+          <button className="back-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Back to top">↑</button>
+        )
+      }
+    </div >
   )
 }
