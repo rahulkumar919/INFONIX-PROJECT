@@ -891,7 +891,7 @@ export default function HomePage() {
         </div>
 
         {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'start', position: 'relative', zIndex: 1 }}>
 
           {/* LEFT — 2 Template Images */}
           <Reveal>
