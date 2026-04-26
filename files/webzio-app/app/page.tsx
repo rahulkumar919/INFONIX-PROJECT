@@ -791,6 +791,33 @@ export default function HomePage() {
       {/* ── HERO ── */}
       <section style={{ padding: '80px 4% 80px', background: '#FDF1F1', position: 'relative', overflow: 'hidden' }}>
 
+        {/* Hero Heading */}
+        <div style={{ textAlign: 'center', marginBottom: 48, animation: 'fadeIn .6s ease' }}>
+          <h1 style={{
+            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+            fontWeight: 900,
+            fontFamily: '"Playfair Display", serif',
+            background: 'linear-gradient(135deg, #ec4899, #f97316, #ec4899)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            letterSpacing: '-.02em',
+            lineHeight: 1.2,
+            marginBottom: 12
+          }}>
+            Build Your Dream Website With Webrazeo
+          </h1>
+          <p style={{
+            fontSize: 'clamp(.95rem, 2vw, 1.1rem)',
+            color: '#6b7280',
+            maxWidth: 600,
+            margin: '0 auto',
+            fontWeight: 500
+          }}>
+            Create stunning, professional websites in minutes with our easy-to-use platform
+          </p>
+        </div>
+
         {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'center', position: 'relative', zIndex: 1 }}>
 
