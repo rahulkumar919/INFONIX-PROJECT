@@ -61,7 +61,18 @@ const WebsiteSchema = new Schema<IWebsite>({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   siteName: { type: String, required: true, trim: true },
   slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  templateId: { type: Schema.Types.ObjectId, ref: 'Template', required: true },
+  templateId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Template',
+    required: true,
+    // Custom validator to ensure it's a valid ObjectId
+    validate: {
+      validator: function (v: any) {
+        return mongoose.Types.ObjectId.isValid(v)
+      },
+      message: 'Invalid template ID format'
+    }
+  },
   templateCategory: { type: String, default: '' },
   content: {
     logo: { type: String, default: '' },
@@ -100,5 +111,17 @@ const WebsiteSchema = new Schema<IWebsite>({
 
 WebsiteSchema.index({ userId: 1 })
 WebsiteSchema.index({ slug: 1 })
+
+// Pre-save hook to ensure templateId is ObjectId
+WebsiteSchema.pre('save', function (next) {
+  if (this.templateId && typeof this.templateId === 'string') {
+    try {
+      this.templateId = new mongoose.Types.ObjectId(this.templateId as any)
+    } catch (err) {
+      return next(new Error('Invalid template ID'))
+    }
+  }
+  next()
+})
 
 export default mongoose.models.Website || mongoose.model<IWebsite>('Website', WebsiteSchema)

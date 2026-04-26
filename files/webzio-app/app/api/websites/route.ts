@@ -130,6 +130,16 @@ export async function POST(req: Request) {
       }, { status: 400 })
     }
 
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((e: any) => e.message)
+      return NextResponse.json({
+        success: false,
+        message: messages.join(', ') || 'Validation failed',
+        errors: messages
+      }, { status: 400 })
+    }
+
     return NextResponse.json({
       success: false,
       message: error.message || 'Failed to create store'
