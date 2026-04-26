@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import mongoose from 'mongoose'
 import dbConnect from '../../../lib/db'
 import Website from '../../../models/Website'
 import { verifyToken } from '../../../lib/auth'
@@ -74,11 +75,22 @@ export async function POST(req: Request) {
       }, { status: 400 })
     }
 
+    // Convert templateId to ObjectId explicitly
+    let templateObjectId
+    try {
+      templateObjectId = new mongoose.Types.ObjectId(templateId)
+    } catch (err) {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid template ID'
+      }, { status: 400 })
+    }
+
     const website = await Website.create({
       userId: decoded.id,
       siteName,
       slug,
-      templateId: templateId, // ObjectId string from frontend
+      templateId: templateObjectId, // Explicitly converted ObjectId
       isActive: true,
       content: {
         heroTitle: content?.heroTitle || `Welcome to ${siteName}`,
