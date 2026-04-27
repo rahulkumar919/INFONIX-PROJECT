@@ -677,7 +677,7 @@ export default function AdminTemplatesPage() {
                     srcDoc={form.htmlCode}
                     style={{ width: '100%', height: 600, border: 'none' }}
                     title="HTML Preview"
-                    sandbox="allow-scripts"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
                   />
                 </div>
               </div>
@@ -751,7 +751,7 @@ export default function AdminTemplatesPage() {
                       srcDoc={t.htmlCode}
                       style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
                       title={`${t.name} Preview`}
-                      sandbox="allow-scripts"
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
                     />
                   ) : (
                     // Visual Template Preview
@@ -851,7 +851,7 @@ export default function AdminTemplatesPage() {
                   srcDoc={preview.htmlCode}
                   style={{ width: '100%', height: 400, border: 'none' }}
                   title="HTML Preview"
-                  sandbox="allow-scripts"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
                 />
               </div>
             ) : (
