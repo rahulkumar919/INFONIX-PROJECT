@@ -7,7 +7,7 @@ import { useThemeStore } from '../../stores/themeStore'
 export default function DashboardPage() {
   const { user, token } = useAuthStore()
   const { theme } = useThemeStore()
-  const [stats, setStats] = useState({ stores: 0, products: 0, views: 0 })
+  const [stats, setStats] = useState({ stores: 0, products: 0, views: 0, portfolios: 0 })
   const [stores, setStores] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -39,17 +39,21 @@ export default function DashboardPage() {
         const pRes = await fetch('/api/products', { headers: { Authorization: `Bearer ${token}` } })
         const pData = await pRes.json()
         if (pData.success) setStats(prev => ({ ...prev, products: pData.products.length }))
+
+        const portRes = await fetch('/api/portfolios', { headers: { Authorization: `Bearer ${token}` } })
+        const portData = await portRes.json()
+        if (Array.isArray(portData)) setStats(prev => ({ ...prev, portfolios: portData.length }))
       } catch { }
       setLoading(false)
     }
-    load()
-  }, [])
+    if (token) load()
+  }, [token])
 
   const statCards = [
     { label: 'Total Stores', value: stats.stores, icon: '🏪', color: '#3B82F6', trend: '+12%', bg: 'rgba(59, 130, 246, 0.1)' },
     { label: 'Products', value: stats.products, icon: '📦', color: '#22C55E', trend: '+8%', bg: 'rgba(34, 197, 94, 0.1)' },
     { label: 'Total Views', value: stats.views, icon: '👁️', color: '#F59E0B', trend: '+24%', bg: 'rgba(245, 158, 11, 0.1)' },
-    { label: 'Conversion', value: '3.4%', icon: '📈', color: '#EC4899', trend: '+1.2%', bg: 'rgba(236, 72, 153, 0.1)' },
+    { label: 'Portfolios', value: stats.portfolios || 0, icon: '💼', color: '#EC4899', trend: '+2%', bg: 'rgba(236, 72, 153, 0.1)' },
   ]
 
   const templates: Record<number, { name: string; color: string; icon: string }> = {
@@ -67,18 +71,32 @@ export default function DashboardPage() {
           </h1>
           <p style={{ fontSize: '0.95rem', color: colors.textMuted }}>Welcome back, {user?.name || 'User'}! Here's what's happening with your stores.</p>
         </div>
-        <Link href="/dashboard/stores" style={{ padding: '12px 28px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 8 }}
-          onMouseEnter={e => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 4px 14px rgba(59, 130, 246, 0.3)'
-          }}
-        >
-          <span style={{ fontSize: '1.1rem' }}>+</span> New Store
-        </Link>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <Link href="/dashboard/portfolios" style={{ padding: '12px 28px', background: 'linear-gradient(135deg, #EC4899, #F472B6)', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 14px rgba(236, 72, 153, 0.3)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 8 }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(236, 72, 153, 0.4)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(236, 72, 153, 0.3)'
+            }}
+          >
+            <span style={{ fontSize: '1.1rem' }}>💼</span> Portfolios
+          </Link>
+          <Link href="/dashboard/stores" style={{ padding: '12px 28px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', border: 'none', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 8 }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(59, 130, 246, 0.3)'
+            }}
+          >
+            <span style={{ fontSize: '1.1rem' }}>+</span> New Store
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}

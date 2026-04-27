@@ -614,8 +614,7 @@ export default function HomePage() {
   const [heroBanner, setHeroBanner] = useState<any>(null)
   const statsRef = useRef<HTMLDivElement>(null)
 
-  const tplRow1 = useAutoScroll(0.5, 'left')
-  const tplRow2 = useAutoScroll(0.4, 'right')
+  // tplRow1 / tplRow2 removed — templates now use a static grid
   const testimonialScroll = useAutoScroll(0.45, 'left')
   const tickerScroll = useAutoScroll(0.8, 'left')
 
@@ -731,7 +730,7 @@ export default function HomePage() {
     { q: 'What types of businesses can use this?', a: 'Restaurants, hotels, cafes, pharmacies, gyms, salons, freelancers, shops — basically any business that wants an online presence without a big budget.' },
   ]
 
-  const scrollTemplates = [...templates, ...templates]
+  // scrollTemplates removed — no longer needed with grid layout
 
   const navLinks: [string, string][] = [['Features', '#features'], ['Templates', '#templates'], ['Listings', '/listings'], ['How it Works', '#how'], ['Pricing', '#pricing'], ['Blog', '/blog']]
 
@@ -789,231 +788,256 @@ export default function HomePage() {
       <MobileNav navLinks={navLinks} activeSection={activeSection} navScrolled={navScrolled} />
 
       {/* ── HERO ── */}
-      <section style={{ padding: '80px 4% 80px', background: '#FDF1F1', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: '100px 4% 80px', background: '#FDF1F1', position: 'relative', overflow: 'hidden' }}>
 
-        {/* Hero Heading */}
-        <div style={{ textAlign: 'center', marginBottom: 48, animation: 'fadeIn .6s ease', position: 'relative' }}>
-          {/* Small badge text */}
-          <div style={{
-            display: 'inline-block',
-            padding: '6px 20px',
-            background: 'rgba(255, 107, 122, 0.1)',
-            border: '1px solid rgba(255, 107, 122, 0.3)',
-            borderRadius: 50,
-            fontSize: '.8rem',
-            fontWeight: 600,
-            color: '#FF6B7A',
-            marginBottom: 20,
-            letterSpacing: '.05em'
-          }}>
-            No #01 Digital Services Website
-          </div>
+        {/* Center Content — Heading, Subtext, Buttons */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <Reveal>
+            <div style={{ textAlign: 'center', marginBottom: 60 }}>
+              {/* Main heading */}
+              <h1 style={{
+                fontSize: 'clamp(2.5rem, 6vw, 4.2rem)',
+                fontWeight: 900,
+                fontFamily: '"Playfair Display", serif',
+                color: '#1a1a1a',
+                letterSpacing: '-.02em',
+                lineHeight: 1.1,
+                marginBottom: 24
+              }}>
+                Build Your Dream<br />
+                Website With Webrazeo
+              </h1>
 
-          {/* Main heading */}
-          <h1 style={{
-            fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-            fontWeight: 900,
-            fontFamily: '"Playfair Display", serif',
-            color: '#1a1a1a',
-            letterSpacing: '-.02em',
-            lineHeight: 1.15,
-            marginBottom: 24,
-            maxWidth: 900,
-            margin: '0 auto 24px'
-          }}>
-            Build Your Dream<br />
-            Website With Webrazeo
-          </h1>
 
-          {/* Curved line decoration */}
-          <svg style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -20%)', width: '800px', height: '200px', pointerEvents: 'none', opacity: 0.3 }} viewBox="0 0 800 200">
-            <path d="M 50 100 Q 400 50, 750 100" stroke="#FF6B7A" strokeWidth="2" fill="none" strokeDasharray="5,5" />
-          </svg>
+              {/* <p style={{
+                fontSize: 'clamp(.95rem, 2vw, 1.05rem)',
+                color: '#6b7280',
+                maxWidth: 650,
+                margin: '0 auto 40px',
+                fontWeight: 400,
+                lineHeight: 1.6
+              }}>
+                We are elite author at envato. We help you to build your own booking website easy way
+              </p> */}
 
-          {/* Subtext */}
-          <p style={{
-            fontSize: 'clamp(.95rem, 2vw, 1.05rem)',
-            color: '#6b7280',
-            maxWidth: 600,
-            margin: '0 auto 32px',
-            fontWeight: 400,
-            lineHeight: 1.6
-          }}>
-            We are elite author at envato. We help you to build your own booking website easy way
-          </p>
 
-          {/* CTA Buttons */}
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Link href="/signup" style={{
-              padding: '14px 32px',
-              background: 'linear-gradient(135deg, #FF6B7A, #FF8A94)',
-              color: '#fff',
-              borderRadius: 8,
-              textDecoration: 'none',
-              fontWeight: 700,
-              fontSize: '.95rem',
-              boxShadow: '0 4px 20px rgba(255, 107, 122, 0.3)',
-              transition: 'all .3s ease',
-              border: 'none'
-            }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 25px rgba(255, 107, 122, 0.4)'
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(255, 107, 122, 0.3)'
-              }}
-            >
-              Build Your Website
-            </Link>
-            <Link href="/templates" style={{
-              padding: '14px 32px',
-              background: 'transparent',
-              color: '#FF6B7A',
-              borderRadius: 8,
-              textDecoration: 'none',
-              fontWeight: 700,
-              fontSize: '.95rem',
-              border: '2px solid #FF6B7A',
-              transition: 'all .3s ease'
-            }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(255, 107, 122, 0.05)'
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = 'transparent'
-              }}
-            >
-              View Demo
-            </Link>
-          </div>
+            </div>
+          </Reveal>
         </div>
 
-        {/* 3-Column Grid: Left Templates | Center Laptop | Right Templates */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr 300px', gap: 40, alignItems: 'start', position: 'relative', zIndex: 1 }}>
+        {/* Template Images Grid — Surrounding Layout */}
+        <div style={{ maxWidth: 1400, margin: '60px auto 0', position: 'relative', zIndex: 1, height: 500 }}>
 
-          {/* LEFT — 2 Template Images */}
-          <Reveal>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {/* LEFT COLUMN — 2 Images stacked */}
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '22%', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Top Left */}
+            <Reveal>
               <div style={{
                 background: '#fff',
                 borderRadius: 16,
                 overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                 border: '2px solid #f0f0f0',
-                transition: 'transform 0.3s ease'
+                transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                height: 200,
+                cursor: 'pointer'
               }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-12px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.18)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                }}
               >
                 <img
-                  src={heroBanner?.topLeftImage || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop"}
-                  alt="Business Template 1"
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                  src={heroBanner?.topLeftImage || ""}
+                  alt="Template 1"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: heroBanner?.topLeftImage ? 'block' : 'none' }}
                 />
               </div>
+            </Reveal>
 
+            {/* Bottom Left */}
+            <Reveal delay={100}>
               <div style={{
                 background: '#fff',
                 borderRadius: 16,
                 overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                 border: '2px solid #f0f0f0',
-                transition: 'transform 0.3s ease'
+                transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                height: 200,
+                cursor: 'pointer'
               }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-12px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.18)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                }}
               >
                 <img
-                  src={heroBanner?.bottomLeftImage || "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop"}
-                  alt="Business Template 2"
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                  src={heroBanner?.bottomLeftImage || ""}
+                  alt="Template 2"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: heroBanner?.bottomLeftImage ? 'block' : 'none' }}
                 />
               </div>
-            </div>
-          </Reveal>
-
-          {/* CENTER — Laptop Showcase (UNCHANGED) */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LaptopShowcase />
+            </Reveal>
           </div>
 
-          {/* RIGHT — 2 Template Images */}
-          <Reveal delay={200}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{
-                background: '#fff',
-                borderRadius: 16,
-                overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                border: '2px solid #f0f0f0',
-                transition: 'transform 0.3s ease'
-              }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                <img
-                  src={heroBanner?.topRightImage || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop"}
-                  alt="Business Template 3"
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
-                />
-              </div>
+          {/* CENTER — Laptop Showcase */}
+          <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: '45%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Reveal delay={150}>
+              <LaptopShowcase />
+            </Reveal>
+          </div>
 
+
+          {/* RIGHT COLUMN — 2 Images stacked */}
+          <div style={{ position: 'absolute', right: 0, top: 0, width: '22%', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Top Right */}
+            <Reveal delay={200}>
               <div style={{
                 background: '#fff',
                 borderRadius: 16,
                 overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                 border: '2px solid #f0f0f0',
-                transition: 'transform 0.3s ease'
+                transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                height: 200,
+                cursor: 'pointer'
               }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-12px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.18)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                }}
               >
                 <img
-                  src={heroBanner?.bottomRightImage || "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop"}
-                  alt="Business Template 4"
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                  src={heroBanner?.topRightImage || ""}
+                  alt="Template 3"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: heroBanner?.topRightImage ? 'block' : 'none' }}
                 />
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+
+            {/* Bottom Right */}
+            <Reveal delay={250}>
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                overflow: 'hidden',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
+                border: '2px solid #f0f0f0',
+                transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                height: 200,
+                cursor: 'pointer'
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-12px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.18)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                }}
+              >
+                <img
+                  src={heroBanner?.bottomRightImage || ""}
+                  alt="Template 4"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: heroBanner?.bottomRightImage ? 'block' : 'none' }}
+                />
+              </div>
+            </Reveal>
+          </div>
 
         </div>
       </section>
+      {/* CTA Buttons */}
+      <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Link href="/signup" style={{
+          padding: '14px 36px',
+          background: 'linear-gradient(135deg, #FF6B7A, #FF8A94)',
+          color: '#fff',
+          borderRadius: 8,
+          textDecoration: 'none',
+          fontWeight: 700,
+          fontSize: '.95rem',
+          boxShadow: '0 4px 20px rgba(255, 107, 122, 0.3)',
+          transition: 'all .3s ease',
+          border: 'none'
+        }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+            (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 25px rgba(255, 107, 122, 0.4)'
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+            (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(255, 107, 122, 0.3)'
+          }}
+        >
+          Build Your Website
+        </Link>
+        <Link href="/templates" style={{
+          padding: '14px 36px',
+          background: 'transparent',
+          color: '#FF6B7A',
+          borderRadius: 8,
+          textDecoration: 'none',
+          fontWeight: 700,
+          fontSize: '.95rem',
+          border: '2px solid #FF6B7A',
+          transition: 'all .3s ease'
+        }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.background = 'rgba(255, 107, 122, 0.05)'
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.background = 'transparent'
+          }}
+        >
+          View Demo
+        </Link>
+      </div>
 
       {/* ── CTA BANNER — After Hero ── */}
-      <section style={{ padding: '20px 6%', background: '#FDF1F1' }}>
+      <section style={{ padding: '40px 6%', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #eef2ff 0%, #e0e7ff 50%, #ede9fe 100%)',
           borderRadius: 20,
-          padding: '24px 36px',
+          padding: '48px 56px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 24,
+          gap: 32,
           flexWrap: 'wrap',
           boxShadow: '0 4px 24px rgba(79,70,229,.10)',
           border: '1.5px solid rgba(99,102,241,.15)',
         }}>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 'clamp(.95rem,2vw,1.15rem)', color: '#1e1b4b', marginBottom: 5 }}>
+            <div style={{ fontWeight: 800, fontSize: 'clamp(1.1rem,2.5vw,1.35rem)', color: '#1e1b4b', marginBottom: 8 }}>
               Transform Your Online Presence with a Professional Website
             </div>
-            <div style={{ color: '#4b5563', fontSize: '.88rem' }}>
+            <div style={{ color: '#4b5563', fontSize: '.95rem' }}>
               Get a high-converting website tailored for your business — live in under 5 minutes with Webrazeo.
             </div>
           </div>
           <Link href="/signup" style={{
-            padding: '13px 28px',
+            padding: '15px 36px',
             background: '#1e1b4b',
             color: '#fff',
             borderRadius: 10,
             textDecoration: 'none',
             fontWeight: 700,
-            fontSize: '.9rem',
+            fontSize: '.95rem',
             whiteSpace: 'nowrap',
             flexShrink: 0,
             boxShadow: '0 4px 14px rgba(30,27,75,.25)',
@@ -1025,10 +1049,10 @@ export default function HomePage() {
             Get Started Free →
           </Link>
         </div>
-      </section>
+      </section >
 
       {/* ── STATS ── */}
-      <div ref={statsRef} style={{ background: '#FDF1F1', padding: '52px 6%', position: 'relative', overflow: 'hidden' }}>
+      < div ref={statsRef} style={{ background: '#FDF1F1', padding: '52px 6%', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%,rgba(255,182,193,.15),transparent 70%)', pointerEvents: 'none' }} />
         <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20, maxWidth: 900, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           {[
@@ -1050,10 +1074,10 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      </div>
+      </div >
 
       {/* ── TICKER ── */}
-      <div className="animated-bg" style={{ padding: '12px 0', overflow: 'hidden' }}>
+      < div className="animated-bg" style={{ padding: '12px 0', overflow: 'hidden' }}>
         <div ref={tickerScroll.wrapRef} className="scroll-wrap" style={{ overflow: 'hidden' }}>
           <div ref={tickerScroll.trackRef} className="scroll-track">
             {Array(3).fill(['🍴 Restaurant Menus', '🏨 Hotel Rooms', '💊 Pharmacy Catalog', '💪 Gym Classes', '💅 Salon Services', '🏠 Real Estate', '📸 Photography', '👗 Clothing Store', '🛒 Grocery Shop', '🏥 Medical Clinic', '🚀 Startup Landing', '👨‍💻 Developer Portfolio']).flat().map((t, i) => (
@@ -1061,11 +1085,11 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </div>
+      </div >
 
       {/* ── TEMPLATES ── */}
-      <section id="templates" style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
-        <Reveal style={{ textAlign: 'center', marginBottom: 44, padding: '0 6%' }}>
+      < section id="templates" style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
+        <Reveal style={{ textAlign: 'center', marginBottom: 52, padding: '0 6%' }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>
             {templatesLoading ? 'Loading...' : `${templates.length} Templates`}
           </div>
@@ -1081,66 +1105,148 @@ export default function HomePage() {
           </p>
         </Reveal>
 
-        {templatesLoading ? (
-          // Loading state
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: 16, animation: 'pulse 1.5s infinite' }}>🎨</div>
-              <div style={{ color: '#6b7280', fontSize: '.9rem' }}>Loading templates...</div>
-            </div>
-          </div>
-        ) : templates.length === 0 ? (
-          // Empty state
-          <div style={{ textAlign: 'center', padding: '60px 0', color: '#94a3b8' }}>
-            <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
-            <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No templates available yet</div>
-            <p style={{ fontSize: '.9rem' }}>Admin is working on adding professional templates. Check back soon!</p>
-          </div>
-        ) : (
-          // Templates grid
-          [tplRow1, tplRow2].map((row, ri) => (
-            <div key={ri} style={{ overflow: 'hidden', marginBottom: ri === 0 ? 16 : 0 }}>
-              <div ref={row.wrapRef} className="scroll-wrap" style={{ overflow: 'hidden' }}>
-                <div ref={row.trackRef} className="scroll-track" style={{ gap: 16, padding: '8px 24px' }}>
-                  {scrollTemplates.slice(0, Math.min(50, templates.length * 2)).map((t, i) => (
-                    <div key={i} className="tpl-card">
-                      <div style={{ height: 130, background: t.color || 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', padding: 16 }}>
-                        {t.popular && <div style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(245,158,11,.9)', color: '#fff', padding: '2px 8px', borderRadius: 50, fontSize: '.58rem', fontWeight: 800, animation: 'blink 2s ease-in-out infinite' }}>🔥 Popular</div>}
-                        <div style={{ position: 'absolute', top: 10, left: 12, background: 'rgba(255,255,255,.2)', padding: '2px 10px', borderRadius: 50, fontSize: '.6rem', fontWeight: 700 }}>{t.category}</div>
-                        <div style={{ fontSize: '2.4rem', marginBottom: 6 }}>{t.icon || '🌐'}</div>
-                        <div style={{ fontWeight: 800, fontSize: '.82rem', textAlign: 'center', fontFamily: '"Playfair Display",serif' }}>{t.name}</div>
-                        {/* hover overlay */}
-                        <div className="tpl-overlay">
-                          <Link href="/signup" style={{ padding: '8px 18px', background: '#fff', color: '#4f46e5', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: '.78rem' }}>Use Template →</Link>
-                        </div>
-                      </div>
-                      <div style={{ padding: '12px 14px' }}>
-                        <div style={{ fontSize: '.73rem', color: '#6b7280', lineHeight: 1.6, marginBottom: 8 }}>{t.desc}</div>
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                          {(t.tags || []).map((tag: string) => (
-                            <span key={tag} style={{ fontSize: '.6rem', fontWeight: 700, padding: '2px 8px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        {
+          templatesLoading ? (
+            // Loading state
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '3rem', marginBottom: 16, animation: 'pulse 1.5s infinite' }}>🎨</div>
+                <div style={{ color: '#6b7280', fontSize: '.9rem' }}>Loading templates...</div>
               </div>
             </div>
-          ))
-        )}
+          ) : templates.length === 0 ? (
+            // Empty state
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#94a3b8' }}>
+              <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
+              <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No templates available yet</div>
+              <p style={{ fontSize: '.9rem' }}>Admin is working on adding professional templates. Check back soon!</p>
+            </div>
+          ) : (
+            // Beautiful 3-column grid of real templates
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 6%' }}>
+              <style>{`
+              .tpl-grid-card {
+                background: #fff; border-radius: 18px; overflow: hidden;
+                box-shadow: 0 4px 24px rgba(0,0,0,.07); border: 1.5px solid #f0f0f0;
+                transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s ease, border-color .3s;
+                cursor: pointer; position: relative;
+              }
+              .tpl-grid-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 24px 64px rgba(79,70,229,.16);
+                border-color: rgba(79,70,229,.28);
+              }
+              .tpl-grid-img-wrap { position: relative; height: 230px; overflow: hidden; }
+              .tpl-grid-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+              .tpl-grid-card:hover .tpl-grid-img { transform: scale(1.06); }
+              .tpl-grid-overlay {
+                position: absolute; inset: 0;
+                background: linear-gradient(to top, rgba(15,8,40,.82) 0%, rgba(15,8,40,.25) 55%, transparent 100%);
+                display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+                padding-bottom: 22px; gap: 10px; opacity: 0; transition: opacity .3s ease;
+              }
+              .tpl-grid-card:hover .tpl-grid-overlay { opacity: 1; }
+              .tpl-view-btn {
+                padding: 10px 26px; background: #fff; color: #4f46e5; border-radius: 50px;
+                text-decoration: none; font-weight: 800; font-size: .82rem;
+                box-shadow: 0 6px 20px rgba(0,0,0,.25); display: inline-flex; align-items: center; gap: 6px;
+                transition: background .22s, color .22s, transform .22s; border: none; cursor: pointer;
+              }
+              .tpl-view-btn:hover { background: #4f46e5; color: #fff; transform: scale(1.06); }
+              .tpl-use-btn {
+                padding: 8px 20px; background: rgba(255,255,255,.15); color: #fff; border-radius: 50px;
+                text-decoration: none; font-weight: 700; font-size: .75rem; display: inline-flex;
+                align-items: center; gap: 5px; border: 1.5px solid rgba(255,255,255,.35); transition: background .22s; cursor: pointer;
+              }
+              .tpl-use-btn:hover { background: rgba(255,255,255,.28); }
+              .tpl-popular-badge {
+                position: absolute; top: 12px; right: 12px;
+                background: linear-gradient(135deg, #f59e0b, #f97316); color: #fff; padding: 4px 11px;
+                border-radius: 50px; font-size: .6rem; font-weight: 800; letter-spacing: .04em;
+                z-index: 3; box-shadow: 0 3px 10px rgba(249,115,22,.4);
+              }
+              .tpl-cat-badge {
+                position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,.92); color: #374151;
+                padding: 4px 11px; border-radius: 50px; font-size: .62rem; font-weight: 700; z-index: 3;
+                backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,.1);
+              }
+            `}</style>
 
-        {templates.length > 0 && (
-          <Reveal style={{ textAlign: 'center', marginTop: 36 }}>
-            <Link href="/signup" className="btn-primary" style={{ padding: '13px 32px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontSize: '.95rem', fontWeight: 700, boxShadow: '0 6px 20px rgba(79,70,229,.3)', display: 'inline-block' }}>
-              Browse All {templates.length} Templates →
-            </Link>
-          </Reveal>
-        )}
-      </section>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 28 }}>
+                {templates.map((t: any, i: number) => (
+                  <Reveal key={t._id || i} delay={i * 60}>
+                    <div className="tpl-grid-card">
+                      <div className="tpl-grid-img-wrap">
+                        {t.previewImage ? (
+                          <img src={t.previewImage} alt={t.name} className="tpl-grid-img" />
+                        ) : (
+                          <div style={{
+                            width: '100%', height: '100%',
+                            background: t.color || 'linear-gradient(135deg,#4f46e5,#7c3aed)',
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12,
+                          }}>
+                            <div style={{ fontSize: '4rem' }}>{t.icon || '🌐'}</div>
+                            <div style={{ fontFamily: '"Playfair Display",serif', fontWeight: 900, fontSize: '1.1rem', color: '#fff', textAlign: 'center', padding: '0 20px' }}>{t.name}</div>
+                          </div>
+                        )}
+                        {t.popular && <div className="tpl-popular-badge">🔥 Popular</div>}
+                        <div className="tpl-cat-badge">{t.icon ? t.icon + ' ' : ''}{t.category}</div>
+                        <div className="tpl-grid-overlay">
+                          <a href={`/signup?template=${t._id}`} className="tpl-view-btn">👁 View Template</a>
+                          <a href={`/signup?template=${t._id}`} className="tpl-use-btn">✦ Use This Template</a>
+                        </div>
+                      </div>
+                      <div style={{ padding: '18px 20px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                          <div style={{ fontWeight: 800, fontSize: '.97rem', color: '#111', fontFamily: '"Playfair Display",serif' }}>{t.name}</div>
+                          {t.usageCount > 0 && <div style={{ fontSize: '.62rem', color: '#9ca3af', fontWeight: 600 }}>{t.usageCount.toLocaleString()} uses</div>}
+                        </div>
+                        {t.desc && (
+                          <p style={{ fontSize: '.78rem', color: '#6b7280', lineHeight: 1.65, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {t.desc}
+                          </p>
+                        )}
+                        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 14 }}>
+                          {(t.tags || []).slice(0, 4).map((tag: string) => (
+                            <span key={tag} style={{ fontSize: '.6rem', fontWeight: 700, padding: '3px 9px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
+                          ))}
+                        </div>
+                        <a
+                          href={`/signup?template=${t._id}`}
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                            padding: '11px 0', borderRadius: 10, width: '100%',
+                            background: 'linear-gradient(135deg,#4f46e5,#7c3aed)',
+                            color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '.83rem',
+                            boxShadow: '0 4px 14px rgba(79,70,229,.25)', transition: 'opacity .2s, transform .2s',
+                          }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '.88'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)' }}
+                        >
+                          Use This Template →
+                        </a>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          templates.length > 0 && (
+            <Reveal style={{ textAlign: 'center', marginTop: 52 }}>
+              <Link href="/signup" className="btn-primary" style={{ padding: '13px 32px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontSize: '.95rem', fontWeight: 700, boxShadow: '0 6px 20px rgba(79,70,229,.3)', display: 'inline-block' }}>
+                Browse All {templates.length} Templates →
+              </Link>
+            </Reveal>
+          )
+        }
+      </section >
 
       {/* ── FEATURES ── */}
-      <section id="features" style={{ padding: '88px 6%', background: '#fff' }}>
+      < section id="features" style={{ padding: '88px 6%', background: '#fff' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>What you get</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em' }}>Everything your business needs</h2>
@@ -1158,10 +1264,10 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
-      </section>
+      </section >
 
       {/* ── HOW TO SETUP WEBSITE ── */}
-      <section style={{ padding: '88px 6%', background: '#FDF1F1' }}>
+      < section style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#fef2f2', color: '#FF6B7A', marginBottom: 14 }}>How it works</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em' }}>How To Setup Website</h2>
@@ -1309,13 +1415,13 @@ export default function HomePage() {
             </Link>
           </Reveal>
         </div>
-      </section>
+      </section >
 
       {/* ── HOW IT WORKS ── */}
-      <HowItWorks />
+      < HowItWorks />
 
       {/* ── PRICING ── */}
-      <section id="pricing" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
+      < section id="pricing" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Pricing</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif' }}>Start free, grow at your pace</h2>
@@ -1367,10 +1473,10 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
-      </section>
+      </section >
 
       {/* ── TESTIMONIALS ── */}
-      <section style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
+      < section style={{ padding: '88px 0', background: '#FDF1F1', overflow: 'hidden' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 44, padding: '0 6%' }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Real stories</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', color: '#111' }}>Owners love Webrazeo</h2>
@@ -1395,10 +1501,10 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ── CTA BANNER 1 ── */}
-      <section style={{ padding: '28px 6%', background: '#FDF1F1' }}>
+      < section style={{ padding: '28px 6%', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #e8eeff 0%, #dbeafe 60%, #c7d2fe 100%)',
@@ -1439,10 +1545,10 @@ export default function HomePage() {
             Start for Free →
           </Link>
         </div>
-      </section>
+      </section >
 
       {/* ── FAQ ── */}
-      <section id="faq" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
+      < section id="faq" style={{ padding: '88px 6%', background: '#FDF1F1' }}>
         <Reveal style={{ textAlign: 'center', marginBottom: 52 }}>
           <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>FAQ</div>
           <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', color: '#111' }}>Common questions, honest answers</h2>
@@ -1451,10 +1557,10 @@ export default function HomePage() {
         <Reveal style={{ maxWidth: 680, margin: '0 auto', background: '#fff', borderRadius: 20, border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 4px 24px rgba(79,70,229,.06)' }}>
           {faqs.map((f, i) => <FaqItem key={i} q={f.q} a={f.a} />)}
         </Reveal>
-      </section>
+      </section >
 
       {/* ── CTA BANNER 2 ── */}
-      <section style={{ padding: '28px 6% 56px', background: '#FDF1F1' }}>
+      < section style={{ padding: '28px 6% 56px', background: '#FDF1F1' }}>
         <div style={{
           maxWidth: 1100, margin: '0 auto',
           background: 'linear-gradient(120deg, #f5f3ff 0%, #ede9fe 50%, #ddd6fe 100%)',
@@ -1495,17 +1601,17 @@ export default function HomePage() {
             Get Started Free →
           </Link>
         </div>
-      </section>
+      </section >
 
       {/* ── LATEST BLOG SECTION ── */}
-      <section id="blog" style={{ padding: '88px 6%', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+      < section id="blog" style={{ padding: '88px 6%', background: '#fff', position: 'relative', overflow: 'hidden' }}>
         {/* Decorative blobs */}
-        <div style={{ position: 'absolute', top: -80, right: -80, width: 350, height: 350, background: 'radial-gradient(circle,rgba(79,70,229,.07),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, background: 'radial-gradient(circle,rgba(236,72,153,.06),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        < div style={{ position: 'absolute', top: -80, right: -80, width: 350, height: 350, background: 'radial-gradient(circle,rgba(79,70,229,.07),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        < div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, background: 'radial-gradient(circle,rgba(236,72,153,.06),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-        <Reveal style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
+        < Reveal style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
           {/* Section Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}>
+          < div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}>
             <div>
               <div className="tag" style={{ background: '#eef2ff', color: '#4f46e5', marginBottom: 14 }}>Our Blog</div>
               <h2 style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', fontWeight: 900, fontFamily: '"Playfair Display",serif', letterSpacing: '-.02em', color: '#111', marginBottom: 8 }}>Our Latest Blog</h2>
@@ -1515,38 +1621,40 @@ export default function HomePage() {
             <Link href="/blog" style={{ padding: '12px 26px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: '.88rem', boxShadow: '0 6px 20px rgba(79,70,229,.3)', whiteSpace: 'nowrap', display: 'inline-block' }}>
               View More →
             </Link>
-          </div>
+          </div >
 
           {/* Blog Cards Grid */}
-          {blogsLoading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
-              {[0, 1, 2].map(i => (
-                <div key={i} style={{ borderRadius: 18, overflow: 'hidden', border: '1.5px solid #f0f0f0' }}>
-                  <div style={{ height: 200, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
-                  <div style={{ padding: 22 }}>
-                    <div style={{ height: 14, background: '#f0f0f0', borderRadius: 8, marginBottom: 12, width: '80%' }} />
-                    <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, marginBottom: 8, width: '100%' }} />
-                    <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, width: '65%' }} />
+          {
+            blogsLoading ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
+                {[0, 1, 2].map(i => (
+                  <div key={i} style={{ borderRadius: 18, overflow: 'hidden', border: '1.5px solid #f0f0f0' }}>
+                    <div style={{ height: 200, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+                    <div style={{ padding: 22 }}>
+                      <div style={{ height: 14, background: '#f0f0f0', borderRadius: 8, marginBottom: 12, width: '80%' }} />
+                      <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, marginBottom: 8, width: '100%' }} />
+                      <div style={{ height: 12, background: '#f0f0f0', borderRadius: 8, width: '65%' }} />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : latestBlogs.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
-              {latestBlogs.map((blog, i) => <BlogCard key={blog._id} blog={blog} i={i} />)}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>
-              <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
-              <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No blogs published yet</div>
-              <p style={{ fontSize: '.88rem' }}>Admin is working on great content. Check back soon!</p>
-            </div>
-          )}
-        </Reveal>
-      </section>
+                ))}
+              </div>
+            ) : latestBlogs.length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
+                {latestBlogs.map((blog, i) => <BlogCard key={blog._id} blog={blog} i={i} />)}
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>
+                <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
+                <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8, color: '#6b7280' }}>No blogs published yet</div>
+                <p style={{ fontSize: '.88rem' }}>Admin is working on great content. Check back soon!</p>
+              </div>
+            )
+          }
+        </Reveal >
+      </section >
 
       {/* ── CTA ── */}
-      <section style={{ padding: '88px 6%', background: 'linear-gradient(135deg,#FDF1F1 0%,#FFE5E5 50%,#FDF1F1 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      < section style={{ padding: '88px 6%', background: 'linear-gradient(135deg,#FDF1F1 0%,#FFE5E5 50%,#FDF1F1 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', width: 700, height: 700, background: 'radial-gradient(circle,rgba(129,140,248,.25),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: '-60px', right: '-60px', width: 300, height: 300, background: 'radial-gradient(circle,rgba(236,72,153,.2),transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
         <Reveal style={{ position: 'relative', zIndex: 1 }}>
@@ -1567,10 +1675,10 @@ export default function HomePage() {
           </div>
           <p style={{ color: '#475569', fontSize: '.78rem', marginTop: 18 }}>No credit card · Free plan available · Cancel anytime</p>
         </Reveal>
-      </section>
+      </section >
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding: '48px 6% 28px', background: '#1A1A1A', color: '#fff' }}>
+      < footer style={{ padding: '48px 6% 28px', background: '#1A1A1A', color: '#fff' }}>
         <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr 1fr', gap: 36, maxWidth: 1100, margin: '0 auto', paddingBottom: 36, borderBottom: '1px solid rgba(255,255,255,.07)' }}>
 
           {/* Brand Column */}
@@ -1729,7 +1837,7 @@ export default function HomePage() {
             <Link href="/signup" style={{ color: '#FF6B7A', textDecoration: 'none', fontSize: '.78rem', fontWeight: 700 }}>Sign Up Free</Link>
           </div>
         </div>
-      </footer>
+      </footer >
 
       {/* ── BACK TO TOP ── */}
       {

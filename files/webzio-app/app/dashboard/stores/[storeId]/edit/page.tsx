@@ -36,11 +36,14 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
         if (!data.success) { router.push('/dashboard/stores'); return }
         setWebsite(data.website)
         setContent(data.website.content || {})
-      } catch { router.push('/dashboard/stores') }
+      } catch (err) {
+        console.error('Error loading store:', err)
+        router.push('/dashboard/stores')
+      }
       setLoading(false)
     }
-    load()
-  }, [params.storeId])
+    if (token && params.storeId) load()
+  }, [params.storeId, token, headers])
 
   async function save() {
     setSaving(true)
@@ -50,9 +53,17 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
         body: JSON.stringify({ siteName: website.siteName, content }),
       })
       const data = await res.json()
-      if (data.success) toast.success('✅ Saved!')
-      else toast.error(data.message)
-    } catch { toast.error('Failed') }
+      if (data.success) {
+        toast.success('✅ Changes saved!')
+        setWebsite(data.website)
+        setContent(data.website.content || {})
+      } else {
+        toast.error(data.message || 'Failed to save')
+      }
+    } catch (err) {
+      console.error('Save error:', err)
+      toast.error('Failed to save changes')
+    }
     finally { setSaving(false) }
   }
 
@@ -73,17 +84,21 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
           placeholder={placeholder}
           style={{
             width: '100%',
-            padding: '10px 14px',
-            border: '1px solid #334155',
+            padding: '12px 14px',
+            border: '1.5px solid #334155',
             borderRadius: 8,
-            fontSize: '.85rem',
+            fontSize: '.9rem',
             outline: 'none',
             fontFamily: 'inherit',
             resize: 'vertical',
             background: '#0f172a',
             color: '#e2e8f0',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            cursor: 'text',
+            transition: 'all 0.2s'
           }}
+          onFocus={e => e.currentTarget.style.borderColor = '#6366f1'}
+          onBlur={e => e.currentTarget.style.borderColor = '#334155'}
         />
       ) : (
         <input
@@ -99,16 +114,20 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
           placeholder={placeholder}
           style={{
             width: '100%',
-            padding: '10px 14px',
-            border: '1px solid #334155',
+            padding: '12px 14px',
+            border: '1.5px solid #334155',
             borderRadius: 8,
-            fontSize: '.85rem',
+            fontSize: '.9rem',
             outline: 'none',
             fontFamily: 'inherit',
             background: '#0f172a',
             color: '#e2e8f0',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            cursor: 'text',
+            transition: 'all 0.2s'
           }}
+          onFocus={e => e.currentTarget.style.borderColor = '#6366f1'}
+          onBlur={e => e.currentTarget.style.borderColor = '#334155'}
         />
       )}
     </div>
@@ -175,13 +194,13 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
       </div>
 
       {/* Main Content */}
-      <div style={{ display: 'flex', minHeight: 'calc(100vh - 64px)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) minmax(300px, 1.5fr) minmax(300px, 2fr)', minHeight: 'calc(100vh - 64px)', gap: 0, '@media (max-width: 1200px)': { gridTemplateColumns: '1fr' } }}>
         {/* Left Sidebar - Sections */}
-        <div style={{ width: 240, background: '#1a1f2e', borderRight: '1px solid #334155', flexShrink: 0 }}>
-          <div style={{ height: 56, padding: '0 16px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center' }}>
+        <div style={{ background: '#1a1f2e', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <div style={{ height: 56, padding: '0 16px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <div style={{ fontSize: '.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.05em' }}>CUSTOMIZATION</div>
           </div>
-          <div style={{ padding: '8px', overflowY: 'auto', maxHeight: 'calc(100vh - 120px)' }}>
+          <div style={{ padding: '8px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
             {SECTIONS.map(s => (
               <button
                 key={s.key}
@@ -204,21 +223,21 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
                 }}
               >
                 <span style={{ fontSize: '1.1rem' }}>{s.icon}</span>
-                {s.label}
+                <span style={{ display: 'none', '@media (max-width: 768px)': { display: 'none' } }}>{s.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Middle - Editor */}
-        <div style={{ width: 400, background: '#1e293b', borderRight: '1px solid #334155', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ background: '#1e293b', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
           <div style={{ height: 56, padding: '0 20px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             <span style={{ fontSize: '1.2rem' }}>{SECTIONS.find(s => s.key === activeSection)?.icon}</span>
             <div style={{ fontSize: '.95rem', fontWeight: 700, color: '#e2e8f0' }}>
               {SECTIONS.find(s => s.key === activeSection)?.label}
             </div>
           </div>
-          <div style={{ padding: '20px', overflowY: 'auto', flex: 1, maxHeight: 'calc(100vh - 120px)' }}>
+          <div style={{ padding: '20px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
 
             {activeSection === 'general' && (
               <div>
@@ -310,9 +329,9 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
         </div>
 
         {/* Right - Preview */}
-        <div style={{ flex: 1, background: '#0f172a', minWidth: 0 }}>
+        <div style={{ flex: 1, background: '#0f172a', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
           {/* Preview Header */}
-          <div style={{ height: 56, background: '#1e293b', padding: '0 20px', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ height: 56, background: '#1e293b', padding: '0 20px', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
             <div>
               <div style={{ fontSize: '.85rem', fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>Live Preview</div>
               <div style={{ fontSize: '.7rem', color: '#64748b' }}>Real-time</div>
@@ -352,8 +371,8 @@ export default function StoreEditPage({ params }: { params: { storeId: string } 
           </div>
 
           {/* Browser Frame */}
-          <div style={{ padding: '20px', overflowY: 'auto', maxHeight: 'calc(100vh - 120px)' }}>
-            <div style={{ width: previewMode === 'mobile' ? '375px' : '100%', maxWidth: '100%', margin: '0 auto', background: '#1e293b', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+          <div style={{ padding: '20px', overflowY: 'auto', flex: 1, minHeight: 0, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+            <div style={{ width: previewMode === 'mobile' ? '100%' : '100%', maxWidth: previewMode === 'mobile' ? '375px' : '100%', background: '#1e293b', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
               {/* Browser Bar */}
               <div style={{ background: '#0f172a', padding: '8px 12px', borderBottom: '1px solid #334155', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 4 }}>

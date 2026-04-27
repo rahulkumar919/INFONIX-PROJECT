@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import mongoose from 'mongoose'
 import dbConnect from '../../../lib/db'
 import Website from '../../../models/Website'
+import HeroBanner from '../../../models/HeroBanner'
 import { verifyToken } from '../../../lib/auth'
 import slugify from 'slugify'
 import { sendStoreCreationEmail } from '../../../lib/email'
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
     if (!decoded) return NextResponse.json({ success: false, message: 'Invalid token' }, { status: 401 })
 
     const body = await req.json()
-    const { siteName, slug: requestedSlug, templateId, content } = body
+    const { siteName, slug: requestedSlug, templateId, content, logo, contactEmail, contactPhone, contactAddress, whatsappNumber, aboutText, buttonText } = body
 
     if (!siteName) return NextResponse.json({ success: false, message: 'Store name is required' }, { status: 400 })
 
@@ -86,6 +87,18 @@ export async function POST(req: Request) {
       }, { status: 400 })
     }
 
+    // Fetch active hero banner to use as heroImage
+    let heroImage = ''
+    try {
+      const heroBanner = await HeroBanner.findOne({ isActive: true }).sort({ createdAt: -1 })
+      if (heroBanner) {
+        // Use topLeftImage as the default hero image for the store
+        heroImage = heroBanner.topLeftImage || ''
+      }
+    } catch (err) {
+      console.error('Failed to fetch hero banner:', err)
+    }
+
     const website = await Website.create({
       userId: decoded.id,
       siteName,
@@ -93,14 +106,19 @@ export async function POST(req: Request) {
       templateId: templateObjectId, // Explicitly converted ObjectId
       isActive: true,
       content: {
+        logo: logo || content?.logo || '',
         heroTitle: content?.heroTitle || `Welcome to ${siteName}`,
         heroSubtitle: content?.heroSubtitle || 'Start shopping our amazing collection now.',
+        heroImage: heroImage, // Use admin hero banner image
         aboutTitle: content?.aboutTitle || 'Our Story',
-        aboutText: content?.aboutText || 'This is where our journey began, with a passion for quality products.',
-        contactPhone: content?.contactPhone || '+91 999 999 9999',
-        contactEmail: content?.contactEmail || 'hello@store.com',
-        whatsappNumber: content?.whatsappNumber || '919999999999',
-        footerDesc: content?.footerDesc || `Created with Webzio.`,
+        aboutText: aboutText || content?.aboutText || 'This is where our journey began, with a passion for quality products.',
+        aboutImage: content?.aboutImage || '',
+        contactPhone: contactPhone || content?.contactPhone || '+91 999 999 9999',
+        contactEmail: contactEmail || content?.contactEmail || 'hello@store.com',
+        contactAddress: contactAddress || content?.contactAddress || '',
+        whatsappNumber: whatsappNumber || content?.whatsappNumber || '919999999999',
+        buttonText: buttonText || content?.buttonText || 'Get Started',
+        footerDesc: content?.footerDesc || `© 2026 ${siteName}. All rights reserved.`,
         primaryColor: content?.primaryColor || '#6366f1',
         ...content
       }

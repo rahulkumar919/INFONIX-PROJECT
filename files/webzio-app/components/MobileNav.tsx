@@ -46,31 +46,40 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                     color: #374151;
                     text-decoration: none;
                     font-size: .85rem;
-                    font-weight: 500;
+                    font-weight: 700;
                     padding: 6px 14px;
-                    border-radius: 50px;
-                    transition: all .22s ease;
+                    border-radius: 4px;
+                    transition: color .22s ease;
                     letter-spacing: -.01em;
+                    background: transparent !important;
+                }
+                .nav-link-item::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0px;
+                    left: 14px;
+                    right: 14px;
+                    height: 2px;
+                    border-radius: 2px;
+                    background: linear-gradient(90deg, #4f46e5, #ec4899);
+                    transform: scaleX(0);
+                    transform-origin: left center;
+                    transition: transform .28s cubic-bezier(.4,0,.2,1);
                 }
                 .nav-link-item:hover {
                     color: #4f46e5;
-                    background: rgba(79,70,229,.07);
+                    background: transparent !important;
+                }
+                .nav-link-item:hover::after {
+                    transform: scaleX(1);
                 }
                 .nav-link-item.active {
                     color: #4f46e5;
-                    background: rgba(79,70,229,.09);
-                    font-weight: 600;
+                    background: transparent !important;
+                    font-weight: 700;
                 }
                 .nav-link-item.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 2px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 4px;
-                    height: 4px;
-                    border-radius: 50%;
-                    background: #4f46e5;
+                    transform: scaleX(1);
                 }
                 .nav-cta {
                     padding: 9px 22px;
@@ -91,19 +100,21 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                 }
                 .nav-login {
                     padding: 9px 18px;
-                    color: #374151;
+                    color: #fff;
                     font-size: .85rem;
-                    font-weight: 500;
+                    font-weight: 600;
                     text-decoration: none;
                     border-radius: 50px;
-                    border: 1.5px solid #e5e7eb;
+                    background: linear-gradient(135deg, #FF6B7A, #FF8A94);
+                    border: none;
+                    box-shadow: 0 4px 14px rgba(255,107,122,.25);
                     transition: all .22s ease;
                     white-space: nowrap;
+                    display: inline-block;
                 }
                 .nav-login:hover {
-                    border-color: #4f46e5;
-                    color: #4f46e5;
-                    background: rgba(79,70,229,.04);
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(255,107,122,.4);
                 }
                 .hamburger-line {
                     display: block;
@@ -162,12 +173,11 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                     <div style={{
                         position: 'absolute', left: '50%', transform: 'translateX(-50%)',
                         display: 'flex', alignItems: 'center', gap: 2,
-                        background: 'rgba(255,255,255,.7)',
-                        backdropFilter: 'blur(12px)',
-                        border: '1px solid rgba(0,0,0,.07)',
-                        borderRadius: 50,
+                        background: 'transparent',
+                        border: 'none',
+                        borderRadius: 0,
                         padding: '4px 6px',
-                        boxShadow: '0 2px 12px rgba(0,0,0,.06)',
+                        boxShadow: 'none',
                     }}>
                         {navLinks.map(([label, href]) => (
                             <a
@@ -268,9 +278,10 @@ export default function MobileNav({ navLinks, activeSection, navScrolled }: Mobi
                                 style={{
                                     display: 'block', textAlign: 'center',
                                     padding: '13px', borderRadius: 12,
-                                    border: '1.5px solid #e5e7eb',
-                                    color: '#374151', textDecoration: 'none',
+                                    background: 'linear-gradient(135deg, #FF6B7A, #FF8A94)',
+                                    color: '#fff', textDecoration: 'none',
                                     fontSize: '.95rem', fontWeight: 600,
+                                    boxShadow: '0 4px 14px rgba(255,107,122,.25)',
                                     transition: 'all .18s',
                                 }}
                             >

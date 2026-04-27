@@ -25,6 +25,7 @@ export interface IWebsite extends Document {
     contactEmail: string
     contactAddress: string
     whatsappNumber: string
+    buttonText: string
     footerDesc: string
     primaryColor: string
     seoTitle: string
@@ -86,6 +87,7 @@ const WebsiteSchema = new Schema<IWebsite>({
     contactEmail: { type: String, default: '' },
     contactAddress: { type: String, default: '' },
     whatsappNumber: { type: String, default: '' },
+    buttonText: { type: String, default: 'Get Started' },
     footerDesc: { type: String, default: 'Quality products delivered to you.' },
     primaryColor: { type: String, default: '#6366f1' },
     seoTitle: { type: String, default: '' },

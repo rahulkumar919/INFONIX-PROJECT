@@ -14,7 +14,17 @@ export default function StoresPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [form, setForm] = useState({ siteName: '', templateId: '' })
+  const [form, setForm] = useState({
+    siteName: '',
+    templateId: '',
+    logo: '',
+    contactEmail: '',
+    contactPhone: '',
+    contactAddress: '',
+    whatsappNumber: '',
+    aboutText: '',
+    buttonText: 'Get Started'
+  })
   const [deleting, setDeleting] = useState<string | null>(null)
   const [templateSearch, setTemplateSearch] = useState('')
   const [templateCategory, setTemplateCategory] = useState('All')
@@ -75,7 +85,17 @@ export default function StoresPage() {
       }
       toast.success('Store deployed successfully! 🚀')
       setShowModal(false)
-      setForm({ siteName: '', templateId: '' })
+      setForm({
+        siteName: '',
+        templateId: '',
+        logo: '',
+        contactEmail: '',
+        contactPhone: '',
+        contactAddress: '',
+        whatsappNumber: '',
+        aboutText: '',
+        buttonText: 'Get Started'
+      })
       loadStores()
     } catch { toast.error('Deployment failed') }
     finally { setCreating(false) }
@@ -196,14 +216,17 @@ export default function StoresPage() {
                       e.currentTarget.style.color = '#475569'
                     }}
                   >⚙️ Edit</Link>
-                  <Link href={`/${store.slug}`} target="_blank" style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                  <a href={`http://localhost:3000/${store.slug}`} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#fff', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)'
+                    }}
                     onMouseEnter={e => {
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)'
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)'
                     }}
-                  >🚀 View</Link>
+                  >🚀 View</a>
                   <button onClick={() => deleteStore(store._id)} disabled={deleting === store._id} style={{ padding: '10px 12px', background: '#fee2e2', color: '#ef4444', border: '1px solid #fecaca', borderRadius: 8, fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', transition: 'all 0.2s' }}
                     onMouseEnter={e => {
                       e.currentTarget.style.background = '#fecaca'
@@ -228,13 +251,57 @@ export default function StoresPage() {
               <button onClick={() => setShowModal(false)} style={{ background: '#f1f5f9', border: 'none', width: 36, height: 36, borderRadius: '50%', cursor: 'pointer' }}>✕</button>
             </div>
             <form onSubmit={createStore} style={{ padding: 40, maxHeight: 'calc(90vh - 100px)', overflowY: 'auto' }}>
-              <div style={{ marginBottom: 32 }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Entity Name</label>
-                <input type="text" required autoFocus value={form.siteName} onChange={e => setForm({ ...form, siteName: e.target.value })} placeholder="e.g. Neo-Matrix Store" style={{ width: '100%', padding: '16px 20px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '1rem', outline: 'none' }} />
+              {/* Store Name */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Store Name *</label>
+                <input type="text" required autoFocus value={form.siteName} onChange={e => setForm({ ...form, siteName: e.target.value })} placeholder="e.g. My Awesome Store" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
               </div>
 
+              {/* Logo & Contact Info Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Logo URL</label>
+                  <input type="url" value={form.logo} onChange={e => setForm({ ...form, logo: e.target.value })} placeholder="https://example.com/logo.png" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Email</label>
+                  <input type="email" value={form.contactEmail} onChange={e => setForm({ ...form, contactEmail: e.target.value })} placeholder="hello@store.com" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+              </div>
+
+              {/* Phone & WhatsApp Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Phone</label>
+                  <input type="tel" value={form.contactPhone} onChange={e => setForm({ ...form, contactPhone: e.target.value })} placeholder="+91 999 999 9999" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>WhatsApp</label>
+                  <input type="tel" value={form.whatsappNumber} onChange={e => setForm({ ...form, whatsappNumber: e.target.value })} placeholder="919999999999" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+              </div>
+
+              {/* Address */}
               <div style={{ marginBottom: 24 }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 16, textTransform: 'uppercase' }}>Visual Architecture</label>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Address</label>
+                <input type="text" value={form.contactAddress} onChange={e => setForm({ ...form, contactAddress: e.target.value })} placeholder="123 Business Street, City, Country" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+              </div>
+
+              {/* About Text */}
+              <div style={{ marginBottom: 32 }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>About Your Business</label>
+                <textarea value={form.aboutText} onChange={e => setForm({ ...form, aboutText: e.target.value })} placeholder="Tell us about your business..." style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit', minHeight: '100px', resize: 'vertical' }} />
+              </div>
+
+              {/* Button Text */}
+              <div style={{ marginBottom: 32 }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 12, textTransform: 'uppercase' }}>Call-to-Action Button Text</label>
+                <input type="text" value={form.buttonText} onChange={e => setForm({ ...form, buttonText: e.target.value })} placeholder="Get Started" style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }} />
+              </div>
+
+              {/* Template Selection */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#475569', marginBottom: 16, textTransform: 'uppercase' }}>Select Template *</label>
 
                 {/* Search & Filter */}
                 <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
@@ -243,7 +310,7 @@ export default function StoresPage() {
                     placeholder="🔍 Search templates..."
                     value={templateSearch}
                     onChange={e => setTemplateSearch(e.target.value)}
-                    style={{ padding: '10px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '.85rem', outline: 'none', flex: '1 1 200px', background: '#fff' }}
+                    style={{ padding: '10px 16px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '.85rem', outline: 'none', flex: '1 1 200px', background: '#fff', minWidth: '150px' }}
                   />
                 </div>
 
@@ -255,11 +322,11 @@ export default function StoresPage() {
                       type="button"
                       onClick={() => setTemplateCategory(cat)}
                       style={{
-                        padding: '6px 14px',
+                        padding: '8px 16px',
                         borderRadius: 50,
                         border: 'none',
                         cursor: 'pointer',
-                        fontSize: '.75rem',
+                        fontSize: '.8rem',
                         fontWeight: 700,
                         transition: 'all .2s',
                         background: templateCategory === cat ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#f1f5f9',
@@ -271,35 +338,96 @@ export default function StoresPage() {
                   ))}
                 </div>
 
-                {/* Template Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, maxHeight: '350px', overflowY: 'auto', padding: '4px', marginBottom: 20 }}>
+                {/* Template Grid - Responsive */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, maxHeight: '450px', overflowY: 'auto', padding: '8px', marginBottom: 20 }}>
                   {filteredTemplates.map(t => (
                     <div
                       key={t._id}
                       onClick={() => setForm({ ...form, templateId: t._id })}
                       style={{
-                        padding: '14px 10px',
-                        border: form.templateId === t._id ? '2px solid #6366f1' : '1.5px solid #e2e8f0',
+                        border: form.templateId === t._id ? '3px solid #6366f1' : '1.5px solid #e2e8f0',
                         borderRadius: 14,
                         cursor: 'pointer',
-                        textAlign: 'center',
                         background: form.templateId === t._id ? '#f5f3ff' : '#fff',
-                        transition: 'all 0.2s',
-                        position: 'relative'
+                        transition: 'all 0.3s',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        boxShadow: form.templateId === t._id ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.04)',
+                        transform: form.templateId === t._id ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                      onMouseEnter={e => {
+                        if (form.templateId !== t._id) {
+                          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'
+                          e.currentTarget.style.transform = 'translateY(-4px)'
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (form.templateId !== t._id) {
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'
+                          e.currentTarget.style.transform = 'translateY(0)'
+                        }
                       }}
                     >
-                      {t.popular && (
-                        <div style={{ position: 'absolute', top: 6, right: 6, background: '#f59e0b', color: '#fff', padding: '2px 6px', borderRadius: 50, fontSize: '0.55rem', fontWeight: 800 }}>
-                          🔥
+                      {/* Preview Image */}
+                      {t.previewImage && (
+                        <div style={{ width: '100%', height: 120, background: '#f1f5f9', overflow: 'hidden', position: 'relative' }}>
+                          <img src={t.previewImage} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none' }} />
                         </div>
                       )}
-                      <div style={{ fontSize: '1.8rem', marginBottom: 6 }}>{t.icon || '🌐'}</div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 800, color: form.templateId === t._id ? '#6366f1' : '#1e293b', marginBottom: 3, lineHeight: 1.3 }}>{t.name}</div>
-                      <div style={{ fontSize: '0.6rem', color: '#94a3b8', marginBottom: 6 }}>{t.category}</div>
-                      <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
-                        {(t.tags || []).slice(0, 2).map((tag: string) => (
-                          <span key={tag} style={{ fontSize: '0.52rem', fontWeight: 700, padding: '2px 5px', borderRadius: 50, background: '#f0f0ff', color: '#4f46e5' }}>{tag}</span>
-                        ))}
+
+                      {/* Badge */}
+                      {t.popular && (
+                        <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg, #f59e0b, #f97316)', color: '#fff', padding: '4px 10px', borderRadius: 50, fontSize: '0.65rem', fontWeight: 800, zIndex: 10, boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)' }}>
+                          🔥 Popular
+                        </div>
+                      )}
+
+                      {/* Content */}
+                      <div style={{ padding: '12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                          <div style={{ fontSize: '1.4rem' }}>{t.icon || '🌐'}</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '0.8rem', fontWeight: 800, color: form.templateId === t._id ? '#6366f1' : '#1e293b', lineHeight: 1.2 }}>{t.name}</div>
+                            <div style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: 1 }}>{t.category}</div>
+                          </div>
+                        </div>
+
+                        {t.desc && (
+                          <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: 8, lineHeight: 1.3 }}>
+                            {t.desc}
+                          </div>
+                        )}
+
+                        {/* Select Button */}
+                        <button
+                          type="button"
+                          style={{
+                            marginTop: 'auto',
+                            padding: '8px 12px',
+                            background: form.templateId === t._id ? 'linear-gradient(135deg, #6366f1, #7c3aed)' : '#f1f5f9',
+                            color: form.templateId === t._id ? '#fff' : '#475569',
+                            border: 'none',
+                            borderRadius: 8,
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={e => {
+                            if (form.templateId !== t._id) {
+                              e.currentTarget.style.background = '#e2e8f0'
+                            }
+                          }}
+                          onMouseLeave={e => {
+                            if (form.templateId !== t._id) {
+                              e.currentTarget.style.background = '#f1f5f9'
+                            }
+                          }}
+                        >
+                          {form.templateId === t._id ? '✓ Selected' : 'Select'}
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -314,7 +442,7 @@ export default function StoresPage() {
 
                 {/* Selected Template Info */}
                 {selectedTemplate && (
-                  <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                  <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0', marginBottom: 20 }}>
                     <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#475569', marginBottom: 8 }}>SELECTED TEMPLATE</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div style={{ fontSize: '2rem' }}>{selectedTemplate.icon}</div>
@@ -329,20 +457,21 @@ export default function StoresPage() {
 
               <button
                 type="submit"
-                disabled={creating}
+                disabled={creating || !form.siteName || !form.templateId}
                 style={{
                   width: '100%',
-                  padding: '18px',
-                  background: creating ? '#94a3b8' : '#0f172a',
+                  padding: '16px',
+                  background: creating || !form.siteName || !form.templateId ? '#94a3b8' : '#0f172a',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 14,
-                  fontSize: '1rem',
+                  borderRadius: 12,
+                  fontSize: '0.95rem',
                   fontWeight: 800,
-                  cursor: creating ? 'not-allowed' : 'pointer'
+                  cursor: creating || !form.siteName || !form.templateId ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
                 }}
               >
-                {creating ? 'Deploying Structure...' : 'Confirm Deployment'}
+                {creating ? 'Creating Store...' : 'Create Store'}
               </button>
             </form>
           </div>
